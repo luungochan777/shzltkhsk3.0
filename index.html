@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SHZ Lý Thường Kiệt - Tài liệu lớp HSK3.0</title>
+    <!-- Nhúng bộ thư viện icon cờ quốc gia -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
+    <!-- Nhúng thư viện Font Awesome và Bootstrap Icons để làm hình ảnh minh họa -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -13,6 +15,7 @@
             --secondary-color: #f5f5f5;
             --text-color: #333;
             --border-radius: 12px;
+            /* Thiết lập ưu tiên font chữ Hán sang 标楷体 (BiauKai) trên mọi hệ điều hành */
             --chinese-font: "BiauKai", "BiauKai TC", "Kaiti TC", "KaiTi", "STKaiti", "DFKai-SB", serif;
         }
 
@@ -48,7 +51,7 @@
             box-sizing: border-box;
         }
 
-        /* BỘ LỌC NGANG: Mặc định xếp dọc trên Mobile, tự chuyển sang hàng ngang trên PC */
+        /* BỘ LỌC NGANG: Tự động chuyển hàng dọc trên Mobile, hàng ngang trên PC */
         .filter-bar {
             display: flex;
             flex-direction: column;
@@ -80,7 +83,7 @@
             display: none;
         }
 
-        /* THANH TABS: Tự động cuộn ngang mượt mà trên Mobile */
+        /* THANH TABS: Cuộn ngang mượt mà trên Mobile */
         .tabs {
             display: flex;
             background-color: #eaeaea;
@@ -114,7 +117,7 @@
         .tab-content { padding: 1.2rem 0.8rem; display: none; }
         .tab-content.active { display: block; }
 
-        /* TIỂU MỤC CON: Tự động cuộn ngang trên Mobile */
+        /* TIỂU MỤC CON */
         .sub-categories {
             display: flex;
             gap: 0.6rem;
@@ -154,7 +157,7 @@
             margin-top: 1rem;
         }
 
-        /* CHIỀU CAO THẺ GỐC (Được tối ưu nhẹ cho mobile) */
+        /* CẤU HÌNH THẺ GỐC */
         .flip-card {
             background-color: transparent;
             width: 100%;
@@ -200,6 +203,7 @@
             transform: rotateY(180deg);
         }
 
+        /* Định dạng Chữ Hán hiển thị bằng font 标楷体 */
         .chinese-word {
             font-family: var(--chinese-font);
             font-size: 2.5rem;
@@ -261,7 +265,13 @@
         .bubble-content { padding: 0.6rem 1rem; border-radius: 14px; max-width: 85%; }
         .speaker-a .bubble-content { background-color: #f5f5f5; border-top-left-radius: 2px; }
         .speaker-b .bubble-content { background-color: #e8f8f5; border-top-left-radius: 2px; }
-        .chat-text-zh { font-family: var(--chinese-font); font-size: 1.4rem; margin: 0; }
+        
+        /* Đồng bộ font chữ Hán trong bài hội thoại thành 标楷体 */
+        .chat-text-zh { 
+            font-family: var(--chinese-font); 
+            font-size: 1.4rem; 
+            margin: 0; 
+        }
         .chat-text-py { font-size: 0.9rem; color: #666; margin: 0.2rem 0 0 0; font-style: italic; }
         .chat-audio-btn { background: transparent; border: none; cursor: pointer; padding: 4px; font-size: 1.1rem; vertical-align: middle; }
 
@@ -295,6 +305,7 @@
     </header>
 
     <div class="container">
+        <!-- Bộ lọc trên cùng -->
         <div class="filter-bar">
             <div class="filter-group">
                 <label for="level-select">Trình độ</label>
@@ -315,6 +326,7 @@
             </div>
         </div>
 
+        <!-- Vùng nội dung học tập -->
         <div id="learning-zone" class="tabs-container">
             <div class="tabs">
                 <button class="tab-btn active" onclick="openTab(event, 'tab-img-hanzi')">Lật thẻ Hình ảnh - Từ vựng</button>
@@ -324,6 +336,7 @@
                 <button class="tab-btn" onclick="openTab(event, 'tab-dialogue')">Hội thoại</button>
             </div>
 
+            <!-- TAB 1: THẺ HÌNH ẢNH -->
             <div id="tab-img-hanzi" class="tab-content active">
                 <div class="sub-categories">
                     <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-pronouns')">Đại từ nhân xưng</button>
@@ -338,6 +351,7 @@
                 <div id="cat-img-countries" class="sub-content"><div class="flashcard-grid" id="img-countries-grid"></div></div>
             </div>
 
+            <!-- TAB 2: THẺ CHỮ HÁN - PINYIN -->
             <div id="tab-hanzi-pinyin" class="tab-content">
                 <div class="sub-categories">
                     <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-pronouns')">Đại từ nhân xưng</button>
@@ -355,6 +369,7 @@
             <div id="tab-dictation" class="tab-content"><h3>Chữ Hán viết tay</h3></div>
             <div id="tab-sentences" class="tab-content"><h3>Mẫu câu</h3></div>
             
+            <!-- TAB 5: HỘI THOẠI -->
             <div id="tab-dialogue" class="tab-content">
                 <div class="dialogue-container">
                     <div class="dialogue-section">
@@ -522,6 +537,7 @@
                                 ${frontContent}
                             </div>
                             <div class="flip-card-back">
+                                <!-- Giữ nguyên font 标楷体 đồng bộ cho chữ Hán ở mặt sau thẻ hình ảnh -->
                                 <div class="chinese-word" style="font-size: 2.2rem; margin-bottom:0.8rem;">${item.word}</div>
                                 <div class="pinyin-word" style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:normal; color:#666;">(${item.pinyin.replace(/<br>/g, ' ')})</div>
                                 <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word.replace(/<br>/g, '')}')" title="Nghe phát âm">
