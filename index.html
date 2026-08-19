@@ -1,167 +1,41 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHZ Lý Thường Kiệt - Tài liệu lớp HSK3.0</title>
-    <!-- Nhúng bộ thư viện icon cờ quốc gia -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
-    <!-- Nhúng thư viện Font Awesome và Bootstrap Icons để làm hình ảnh minh họa -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Flashcards</title>
     <style>
-        :root {
-            --primary-color: #d32f2f;
-            --secondary-color: #f5f5f5;
-            --text-color: #333;
-            --border-radius: 12px;
-            /* Thiết lập ưu tiên font chữ Hán sang 标楷体 (BiauKai) trên mọi hệ điều hành */
-            --chinese-font: "BiauKai", "BiauKai TC", "Kaiti TC", "KaiTi", "STKaiti", "DFKai-SB", serif;
-        }
-
-        /* Tối ưu chống lag double-tap trên điện thoại */
-        html, body {
-            touch-action: manipulation;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            color: var(--text-color);
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f7;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
         }
-
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 1.5rem 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
-        header p { margin: 0.3rem 0 0 0; font-size: 1rem; opacity: 0.9; }
 
         .container {
-            max-width: 1100px;
-            margin: 1rem auto;
-            padding: 0 0.8rem;
-            box-sizing: border-box;
+            max-width: 1000px;
+            width: 100%;
         }
 
-        /* BỘ LỌC NGANG: Tự động chuyển hàng dọc trên Mobile, hàng ngang trên PC */
-        .filter-bar {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background: white;
-            padding: 1.2rem;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-group { display: flex; flex-direction: column; flex: 1; }
-        .filter-group label { font-weight: bold; margin-bottom: 0.4rem; color: #555; font-size: 0.95rem; }
-        .filter-group select {
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            background-color: #fff;
-            -webkit-appearance: none;
-        }
-
-        .tabs-container {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            overflow: hidden;
-            display: none;
-        }
-
-        /* THANH TABS: Cuộn ngang mượt mà trên Mobile */
-        .tabs {
-            display: flex;
-            background-color: #eaeaea;
-            border-bottom: 2px solid #ddd;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .tabs::-webkit-scrollbar { display: none; }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 1rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: #555;
-            white-space: nowrap;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background-color: white;
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-        }
-
-        .tab-content { padding: 1.2rem 0.8rem; display: none; }
-        .tab-content.active { display: block; }
-
-        /* TIỂU MỤC CON */
-        .sub-categories {
-            display: flex;
-            gap: 0.6rem;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-        .sub-categories::-webkit-scrollbar { display: none; }
-
-        .sub-cat-btn {
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.88rem;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .sub-cat-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .sub-content { display: none; }
-        .sub-content.active { display: block; }
-
-        /* LƯỚI THẺ: Mặc định chia 2 cột trên Điện thoại */
-        .flashcard-grid {
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.8rem;
-            margin-top: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        /* CẤU HÌNH THẺ GỐC */
+        /* 翻转卡片核心样式 */
         .flip-card {
             background-color: transparent;
             width: 100%;
-            height: 190px;
+            height: 180px;
             perspective: 1000px;
             cursor: pointer;
         }
@@ -171,10 +45,10 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.5s;
+            transition: transform 0.6s;
             transform-style: preserve-3d;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: var(--border-radius);
+            border-radius: 12px;
         }
 
         .flip-card.flipped .flip-card-inner {
@@ -187,460 +61,139 @@
             height: 100%;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: white;
-            border: 1px solid #eee;
-            box-sizing: border-box;
-            padding: 0.8rem;
+            padding: 10px;
+        }
+
+        .flip-card-front {
+            background-color: #ffffff;
+            color: #333;
         }
 
         .flip-card-back {
-            background-color: #fff8f8;
+            background-color: #fff9f9;
+            color: #333;
             transform: rotateY(180deg);
+            border: 2px solid #ffcdd2;
         }
 
-        /* Định dạng Chữ Hán hiển thị bằng font 标楷体 */
-        .chinese-word {
-            font-family: var(--chinese-font);
-            font-size: 2.5rem;
-            font-weight: normal;
-            color: var(--primary-color);
-            margin: 0;
-            word-break: break-all;
-            line-height: 1.2;
-        }
-
-        .pinyin-word {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .topic-icon-display {
-            font-size: 3.5rem;
-            color: #555;
-            margin-bottom: 0.3rem;
-        }
-
-        .flag-icon-display {
-            font-size: 4.5rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            border-radius: 4px;
+        /* 自定义图片样式 */
+        .card-img-display {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 8px;
         }
 
         .hint-text {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: 0.4rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            color: #888;
         }
 
+        /* 发音按钮 */
         .audio-btn {
-            background: #fff;
-            border: 2px solid var(--primary-color);
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: none;
+            border: none;
             cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
         }
-        .audio-btn svg { width: 20px; height: 20px; }
 
-        /* HỘI THOẠI BONG BÓNG */
-        .dialogue-container { max-width: 650px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
-        .dialogue-section { background: #fdfdfd; border-left: 4px solid var(--primary-color); padding: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .dialogue-section h4 { margin: 0 0 0.8rem 0; color: var(--primary-color); font-size: 1rem; }
-        .chat-bubble { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.8rem; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 0.85rem; flex-shrink: 0; }
-        .speaker-a .avatar { background-color: #ffebee; color: #c62828; }
-        .speaker-b .avatar { background-color: #e8f5e9; color: #2e7d32; }
-        .bubble-content { padding: 0.6rem 1rem; border-radius: 14px; max-width: 85%; }
-        .speaker-a .bubble-content { background-color: #f5f5f5; border-top-left-radius: 2px; }
-        .speaker-b .bubble-content { background-color: #e8f8f5; border-top-left-radius: 2px; }
-        
-        /* Đồng bộ font chữ Hán trong bài hội thoại thành 标楷体 */
-        .chat-text-zh { 
-            font-family: var(--chinese-font); 
-            font-size: 1.4rem; 
-            margin: 0; 
+        .audio-btn:hover {
+            background-color: #ffebee;
         }
-        .chat-text-py { font-size: 0.9rem; color: #666; margin: 0.2rem 0 0 0; font-style: italic; }
-        .chat-audio-btn { background: transparent; border: none; cursor: pointer; padding: 4px; font-size: 1.1rem; vertical-align: middle; }
 
-        /* ================= MEDIA QUERIES (CHO MÁY TÍNH LỚN) ================= */
         @media (min-width: 768px) {
-            header { padding: 2rem 1rem; }
-            header h1 { font-size: 2.2rem; }
-            header p { font-size: 1.2rem; }
-            
-            /* Bộ lọc chuyển về dạng hàng ngang */
-            .filter-bar { flex-direction: row; gap: 1.5rem; }
-            
-            /* Lưới thẻ tăng lên thành 4 cột */
-            .flashcard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
-            .flip-card { height: 220px; }
-            .chinese-word { font-size: 3.2rem; }
-            .pinyin-word { font-size: 1.5rem; }
-            .topic-icon-display { font-size: 4.5rem; }
-            .flag-icon-display { font-size: 5.5rem; }
-            .tab-btn { font-size: 1rem; padding: 1rem 1.5rem; }
-            .sub-cat-btn { font-size: 1rem; padding: 0.5rem 1.2rem; }
-            .chat-text-zh { font-size: 1.6rem; }
+            .flip-card {
+                height: 200px;
+            }
+            .card-img-display {
+                width: 95px;
+                height: 95px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>SHZ Lý Thường Kiệt</h1>
-        <p>Tài liệu lớp HSK3.0</p>
-    </header>
+<div class="container">
+    <div id="flashcard-list" class="card-grid"></div>
+</div>
 
-    <div class="container">
-        <!-- Bộ lọc trên cùng -->
-        <div class="filter-bar">
-            <div class="filter-group">
-                <label for="level-select">Trình độ</label>
-                <select id="level-select" onchange="updateLessons()">
-                    <option value="">-- Chọn trình độ --</option>
-                    <option value="hsk1">HSK1</option>
-                    <option value="hsk2">HSK2</option>
-                    <option value="hsk31">HSK3.1</option>
-                    <option value="hsk32">HSK3.2</option>
-                </select>
-            </div>
+<script>
+    // 词汇数据列表
+    const pronounsList = [
+        { 
+            word: "我", 
+            pinyin: "wǒ", 
+            imgSrc: "Lesson 1/wo.png"  // 指向 Lesson 1 文件夹下的 wo.png
+        },
+        { 
+            word: "你", 
+            pinyin: "nǐ", 
+            imgSrc: "" // 后续有其他图片可以直接填入路径，如 "Lesson 1/ni.png"
+        }
+    ];
 
-            <div class="filter-group">
-                <label for="lesson-select">Bài học</label>
-                <select id="lesson-select" disabled onchange="checkSelection()">
-                    <option value="">-- Chọn bài --</option>
-                </select>
-            </div>
-        </div>
+    // 渲染卡片 HTML 函数
+    function generateImgCardsHTML(dataList) {
+        return dataList.map(item => {
+            // 判断是否有图片路径，有则显示 <img>，无则显示默认占位文字
+            const imageHTML = item.imgSrc 
+                ? `<img src="${item.imgSrc}" alt="${item.word}" class="card-img-display" />`
+                : `<div style="font-size: 2rem; margin-bottom: 8px;">❓</div>`;
 
-        <!-- Vùng nội dung học tập -->
-        <div id="learning-zone" class="tabs-container">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="openTab(event, 'tab-img-hanzi')">Lật thẻ Hình ảnh - Từ vựng</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-hanzi-pinyin')">Thẻ từ vựng Chữ Hán - Pinyin</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-dictation')">Chữ Hán viết tay</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-sentences')">Mẫu câu</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-dialogue')">Hội thoại</button>
-            </div>
+            const frontContent = `
+                ${imageHTML}
+                <div class="hint-text">(${item.pinyin})</div>
+            `;
 
-            <!-- TAB 1: THẺ HÌNH ẢNH -->
-            <div id="tab-img-hanzi" class="tab-content active">
-                <div class="sub-categories">
-                    <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-pronouns')">Đại từ nhân xưng</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-greetings')">Câu chào hỏi</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-relations')">Mối quan hệ</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-countries')">Quốc gia</button>
-                </div>
-
-                <div id="cat-img-pronouns" class="sub-content active"><div class="flashcard-grid" id="img-pronouns-grid"></div></div>
-                <div id="cat-img-greetings" class="sub-content"><div class="flashcard-grid" id="img-greetings-grid"></div></div>
-                <div id="cat-img-relations" class="sub-content"><div class="flashcard-grid" id="img-relations-grid"></div></div>
-                <div id="cat-img-countries" class="sub-content"><div class="flashcard-grid" id="img-countries-grid"></div></div>
-            </div>
-
-            <!-- TAB 2: THẺ CHỮ HÁN - PINYIN -->
-            <div id="tab-hanzi-pinyin" class="tab-content">
-                <div class="sub-categories">
-                    <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-pronouns')">Đại từ nhân xưng</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-greetings')">Câu chào hỏi</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-relations')">Mối quan hệ</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-countries')">Quốc gia</button>
-                </div>
-
-                <div id="cat-pronouns" class="sub-content active"><div class="flashcard-grid" id="pronouns-grid"></div></div>
-                <div id="cat-greetings" class="sub-content"><div class="flashcard-grid" id="greetings-grid"></div></div>
-                <div id="cat-relations" class="sub-content"><div class="flashcard-grid" id="relations-grid"></div></div>
-                <div id="cat-countries" class="sub-content"><div class="flashcard-grid" id="countries-grid"></div></div>
-            </div>
-
-            <div id="tab-dictation" class="tab-content"><h3>Chữ Hán viết tay</h3></div>
-            <div id="tab-sentences" class="tab-content"><h3>Mẫu câu</h3></div>
-            
-            <!-- TAB 5: HỘI THOẠI -->
-            <div id="tab-dialogue" class="tab-content">
-                <div class="dialogue-container">
-                    <div class="dialogue-section">
-                        <h4>Mẫu 1: Hỏi tên (Thông thường)</h4>
-                        <div class="chat-bubble speaker-a">
-                            <div class="avatar">A</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">你叫什么名字？<button class="chat-audio-btn" onclick="speakChinese('你叫什么名字？')">🔊</button></p>
-                                <p class="chat-text-py">Nǐ jiào shénme míngzi?</p>
-                            </div>
+            return `
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            ${frontContent}
                         </div>
-                        <div class="chat-bubble speaker-b">
-                            <div class="avatar">B</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">我叫……<button class="chat-audio-btn" onclick="speakChinese('我叫')">🔊</button></p>
-                                <p class="chat-text-py">Wǒ jiào...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dialogue-section">
-                        <h4>Mẫu 2: Hỏi họ (Thông thường)</h4>
-                        <div class="chat-bubble speaker-a">
-                            <div class="avatar">A</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">你姓什么？<button class="chat-audio-btn" onclick="speakChinese('你姓什么？')">🔊</button></p>
-                                <p class="chat-text-py">Nǐ xìng shénme?</p>
-                            </div>
-                        </div>
-                        <div class="chat-bubble speaker-b">
-                            <div class="avatar">B</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
-                                <p class="chat-text-py">Wǒ xìng...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dialogue-section">
-                        <h4>Mẫu 3: Hỏi họ (Trang trọng, lịch sự)</h4>
-                        <div class="chat-bubble speaker-a">
-                            <div class="avatar">A</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">请问您贵姓？<button class="chat-audio-btn" onclick="speakChinese('请问您贵姓？')">🔊</button></p>
-                                <p class="chat-text-py">Qǐngwèn nín guìxìng?</p>
-                            </div>
-                        </div>
-                        <div class="chat-bubble speaker-b">
-                            <div class="avatar">B</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
-                                <p class="chat-text-py">Wǒ xìng...</p>
-                            </div>
+                        <div class="flip-card-back">
+                            <div class="chinese-word" style="font-size: 2rem; margin-bottom: 0.5rem; font-weight: bold; color: #d32f2f;">${item.word}</div>
+                            <div class="pinyin-word" style="font-size: 1rem; margin-bottom: 0.8rem; color: #666;">(${item.pinyin})</div>
+                            <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word}')" title="朗读">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#d32f2f"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            `;
+        }).join('');
+    }
 
-    <script>
-        const lessonData = {
-            hsk1: ["Ngữ âm", "Bài 1", "Bài 2", "Bài 3", "Bài 4"],
-            hsk2: [], hsk31: [], hsk32: []
-        };
+    // 翻转卡片
+    function toggleFlip(element) {
+        element.classList.toggle('flipped');
+    }
 
-        const pronounsList = [
-            { word: "我", pinyin: "wǒ", imgSrc: "Lesson 1/wo.png" }, 
-            { word: "你", pinyin: "nǐ", icon: "bi bi-person-fill-up" }, 
-            { word: "您", pinyin: "nín", icon: "fa-solid fa-user-tie" },
-            { word: "他", pinyin: "tā", icon: "fa-solid fa-user" }, 
-            { word: "她", pinyin: "tā", icon: "fa-solid fa-user-nurse" }, 
-            { word: "我们", pinyin: "wǒmen", icon: "bi bi-people-fill" },
-            { word: "你们", pinyin: "nǐmen", icon: "fa-solid fa-users" }, 
-            { word: "他们", pinyin: "tāmen", icon: "fa-solid fa-users-rectangle" }, 
-            { word: "她们", pinyin: "tāmen", icon: "fa-solid fa-users-viewfinder" }
-        ];
-
-        const greetingsList = [
-            { word: "你好", pinyin: "nǐ hǎo", icon: "bi bi-hand-thumbs-up" }, 
-            { word: "您好", pinyin: "nín hǎo", icon: "fa-solid fa-hands-bowing" }, 
-            { word: "老师好", pinyin: "lǎoshī hǎo", icon: "fa-solid fa-chalkboard-user" },
-            { word: "你们好", pinyin: "nǐmen hǎo", icon: "bi bi-chat-square-heart" }, 
-            { word: "同学们好", pinyin: "tóngxuémen hǎo", icon: "fa-solid fa-graduation-cap" }, 
-            { word: "大家好", pinyin: "dàjiā hǎo", icon: "bi bi-megaphone" }
-        ];
-
-        const relationsList = [
-            { word: "同学", pinyin: "tóngxué", icon: "fa-solid fa-book-reader" }, 
-            { word: "同桌", pinyin: "tóngzhuō", icon: "bi bi-layout-split" }, 
-            { word: "同屋", pinyin: "tóngwū", icon: "bi bi-house-heart" },
-            { word: "同事", pinyin: "tóngshì", icon: "fa-solid fa-briefcase" }, 
-            { word: "朋友", pinyin: "péngyou", icon: "fa-solid fa-user-group" }, 
-            { word: "男朋友", pinyin: "nánpéngyou", icon: "bi bi-heart-pulse-fill" },
-            { word: "女朋友", pinyin: "nǚpéngyou", icon: "bi bi-heart-fill" }
-        ];
-
-        const countriesList = [
-            { word: "越南", pinyin: "Yuènán", code: "vn" },
-            { word: "中国", pinyin: "Zhōngguó", code: "cn" },
-            { word: "韩国", pinyin: "Hánguó", code: "kr" },
-            { word: "英国", pinyin: "Yīngguó", code: "gb" },
-            { word: "美国", pinyin: "Měiguó", code: "us" },
-            { word: "法国", pinyin: "Fǎguó", code: "fr" },
-            { word: "德国", pinyin: "Déguó", code: "de" },
-            { word: "日本", pinyin: "Rìběn", code: "jp" },
-            { word: "加拿大", pinyin: "Jiānádà", code: "ca" },
-            { word: "俄罗斯", pinyin: "Éluósī", code: "ru" },
-            { word: "肯尼亚", pinyin: "Kěnníyà", code: "ke" },
-            { word: "沙特<br>阿拉伯", pinyin: "Shātè Ālābó", code: "sa" }
-        ];
-
-        function toggleFlip(cardElement, wordText) {
-            cardElement.classList.toggle("flipped");
-            if (cardElement.classList.contains("flipped")) {
-                const cleanText = wordText.replace(/<br>/g, '');
-                speakChinese(cleanText);
-            }
+    // 语音朗读
+    function speakChinese(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            window.speechSynthesis.speak(utterance);
         }
+    }
 
-        function speakChinese(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'zh-CN'; 
-                utterance.rate = 0.85; 
-                window.speechSynthesis.speak(utterance);
-            }
+    // 页面加载完成后渲染卡片
+    document.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("flashcard-list");
+        if (container) {
+            container.innerHTML = generateImgCardsHTML(pronounsList);
         }
+    });
+</script>
 
-        function generateImgCardsHTML(dataList) {
-    return dataList.map(item => {
-        // 判断是否有图片路径，如果有则渲染 <img> 标签
-        const imageHTML = item.imgSrc 
-            ? `<img src="${item.imgSrc}" alt="${item.word}" class="card-img-display" />`
-            : '';
-
-        const frontContent = `
-            ${imageHTML}
-            <div class="hint-text">(${item.pinyin})</div>
-        `;
-
-        return `
-            <div class="flip-card" onclick="toggleFlip(this, '${item.word}')">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        ${frontContent}
-                    </div>
-                    <div class="flip-card-back">
-                        <div class="chinese-word" style="font-size: 2.2rem; margin-bottom:0.8rem;">${item.word}</div>
-                        <div class="pinyin-word" style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:normal; color:#666;">(${item.pinyin.replace(/<br>/g, ' ')})</div>
-                        <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word.replace(/<br>/g, '')}')" title="Nghe phát âm">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#d32f2f"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-        function generateImgCardsHTML(dataList, isCountry = false) {
-            return dataList.map(item => {
-                let frontContent = "";
-                if (isCountry) {
-                    frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
-                } else {
-                    frontContent = `
-                        <i class="${item.icon} topic-icon-display"></i>
-                        <div class="hint-text">(${item.pinyin})</div>
-                    `;
-                }
-
-                return `
-                    <div class="flip-card" onclick="toggleFlip(this, '${item.word}')">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                ${frontContent}
-                            </div>
-                            <div class="flip-card-back">
-                                <!-- Giữ nguyên font 标楷体 đồng bộ cho chữ Hán ở mặt sau thẻ hình ảnh -->
-                                <div class="chinese-word" style="font-size: 2.2rem; margin-bottom:0.8rem;">${item.word}</div>
-                                <div class="pinyin-word" style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:normal; color:#666;">(${item.pinyin.replace(/<br>/g, ' ')})</div>
-                                <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word.replace(/<br>/g, '')}')" title="Nghe phát âm">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#d32f2f"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderAllGrids() {
-            document.getElementById("img-pronouns-grid").innerHTML = generateImgCardsHTML(pronounsList);
-            document.getElementById("img-greetings-grid").innerHTML = generateImgCardsHTML(greetingsList);
-            document.getElementById("img-relations-grid").innerHTML = generateImgCardsHTML(relationsList);
-            document.getElementById("img-countries-grid").innerHTML = generateImgCardsHTML(countriesList, true);
-
-            document.getElementById("pronouns-grid").innerHTML = generateCardsHTML(pronounsList);
-            document.getElementById("greetings-grid").innerHTML = generateCardsHTML(greetingsList);
-            document.getElementById("relations-grid").innerHTML = generateCardsHTML(relationsList);
-            document.getElementById("countries-grid").innerHTML = generateCardsHTML(countriesList);
-        }
-
-        function updateLessons() {
-            const levelSelect = document.getElementById("level-select");
-            const lessonSelect = document.getElementById("lesson-select");
-            const selectedLevel = levelSelect.value;
-            lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
-            
-            if (selectedLevel && lessonData[selectedLevel] && lessonData[selectedLevel].length > 0) {
-                lessonData[selectedLevel].forEach(lesson => {
-                    const option = document.createElement("option");
-                    option.value = lesson.toLowerCase().replace(/\s+/g, '');
-                    option.textContent = lesson;
-                    lessonSelect.appendChild(option);
-                });
-                lessonSelect.disabled = false;
-            } else {
-                lessonSelect.disabled = true;
-            }
-            document.getElementById("learning-zone").style.display = "none";
-        }
-
-        function checkSelection() {
-            const levelSelect = document.getElementById("level-select").value;
-            const lessonSelect = document.getElementById("lesson-select").value;
-            const learningZone = document.getElementById("learning-zone");
-
-            if (levelSelect === "hsk1" && lessonSelect === "bài1") {
-                learningZone.style.display = "block";
-                renderAllGrids();
-            } else if (levelSelect && lessonSelect) {
-                learningZone.style.display = "block";
-                document.getElementById("img-pronouns-grid").innerHTML = "<p style='color:#888; font-style:italic; padding: 10px;'>Bài học này đang được soạn thảo...</p>";
-                document.getElementById("img-greetings-grid").innerHTML = "";
-                document.getElementById("img-relations-grid").innerHTML = "";
-                document.getElementById("img-countries-grid").innerHTML = "";
-                document.getElementById("pronouns-grid").innerHTML = "";
-                document.getElementById("greetings-grid").innerHTML = "";
-                document.getElementById("relations-grid").innerHTML = "";
-                document.getElementById("countries-grid").innerHTML = "";
-            } else {
-                learningZone.style.display = "none";
-            }
-        }
-
-        function openTab(evt, tabId) {
-            const tabContents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContents.length; i++) tabContents[i].classList.remove("active");
-            const tabBtns = document.getElementsByClassName("tab-btn");
-            for (let i = 0; i < tabBtns.length; i++) tabBtns[i].classList.remove("active");
-            document.getElementById(tabId).classList.add("active");
-            evt.currentTarget.classList.add("active");
-            
-            evt.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-
-        function openSubCat(evt, catId) {
-            const subContents = evt.currentTarget.parentElement.parentElement.getElementsByClassName("sub-content");
-            for (let i = 0; i < subContents.length; i++) subContents[i].classList.remove("active");
-            
-            const subBtns = evt.currentTarget.parentElement.getElementsByClassName("sub-cat-btn");
-            for (let i = 0; i < subBtns.length; i++) subBtns[i].classList.remove("active");
-            
-            document.getElementById(catId).classList.add("active");
-            evt.currentTarget.classList.add("active");
-            
-            evt.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-    </script>
 </body>
 </html>
