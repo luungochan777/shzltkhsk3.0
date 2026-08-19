@@ -15,7 +15,6 @@
             --secondary-color: #f5f5f5;
             --text-color: #333;
             --border-radius: 12px;
-            /* 定义宋体字体族 */
             --font-simsun: "SimSun", "Songti SC", "NSimSun", "STSong", serif;
         }
 
@@ -197,7 +196,6 @@
             transform: rotateY(180deg);
         }
 
-        /* 汉字改用宋体（SimSun）设置 */
         .chinese-word {
             font-family: var(--font-simsun);
             font-size: 2.5rem;
@@ -235,7 +233,6 @@
             cursor: pointer;
         }
 
-        /* HỘI THOẠI BONG BÓNG */
         .dialogue-container { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
         .dialogue-section { background: #fdfdfd; border-left: 4px solid var(--primary-color); padding: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .dialogue-section h4 { margin: 0 0 0.8rem 0; color: var(--primary-color); font-size: 1rem; }
@@ -247,10 +244,16 @@
         .speaker-a .bubble-content { background-color: #f5f5f5; border-top-left-radius: 2px; }
         .speaker-b .bubble-content { background-color: #e8f8f5; border-top-left-radius: 2px; }
         
-        /* 对话框汉字改用宋体设置 */
         .chat-text-zh { font-family: var(--font-simsun); font-size: 1.6rem; margin: 0; font-weight: bold; }
         .chat-text-py { font-size: 0.9rem; color: #666; margin: 0.2rem 0 0 0; font-style: italic; }
         .chat-audio-btn { background: transparent; border: none; cursor: pointer; padding: 4px; font-size: 1.1rem; vertical-align: middle; }
+
+        .placeholder-text {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #888;
+            font-size: 1.1rem;
+        }
 
         @media (min-width: 768px) {
             header { padding: 2.2rem 1rem; }
@@ -277,13 +280,13 @@
     </header>
 
     <div class="container">
-        <!-- Bộ lọc trên cùng -->
+        <!-- 下拉选择框 -->
         <div class="filter-bar">
             <div class="filter-group">
                 <label for="level-select">Trình độ</label>
                 <select id="level-select">
                     <option value="">-- Chọn trình độ --</option>
-                    <option value="hsk1" selected>HSK1</option>
+                    <option value="hsk1">HSK1</option>
                     <option value="hsk2">HSK2</option>
                     <option value="hsk31">HSK3.1</option>
                     <option value="hsk32">HSK3.2</option>
@@ -292,13 +295,13 @@
 
             <div class="filter-group">
                 <label for="lesson-select">Bài học</label>
-                <select id="lesson-select">
+                <select id="lesson-select" disabled>
                     <option value="">-- Chọn bài --</option>
                 </select>
             </div>
         </div>
 
-        <!-- Vùng nội dung học tập -->
+        <!-- 学习内容区域 -->
         <div id="learning-zone" class="tabs-container">
             <div class="tabs">
                 <button class="tab-btn active" onclick="openTab(event, 'tab-img-hanzi')">Lật thẻ Hình ảnh - Từ vựng</button>
@@ -310,100 +313,25 @@
 
             <!-- TAB 1: THẺ HÌNH ẢNH -->
             <div id="tab-img-hanzi" class="tab-content active">
-                <div class="sub-categories">
-                    <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-pronouns')">Đại từ nhân xưng</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-greetings')">Câu chào hỏi</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-relations')">Mối quan hệ</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-countries')">Quốc gia</button>
-                </div>
-
-                <div id="cat-img-pronouns" class="sub-content active"><div class="flashcard-grid" id="img-pronouns-grid"></div></div>
-                <div id="cat-img-greetings" class="sub-content"><div class="flashcard-grid" id="img-greetings-grid"></div></div>
-                <div id="cat-img-relations" class="sub-content"><div class="flashcard-grid" id="img-relations-grid"></div></div>
-                <div id="cat-img-countries" class="sub-content"><div class="flashcard-grid" id="img-countries-grid"></div></div>
+                <div id="tab1-container"></div>
             </div>
 
             <!-- TAB 2: THẺ CHỮ HÁN - PINYIN -->
             <div id="tab-hanzi-pinyin" class="tab-content">
-                <div class="sub-categories">
-                    <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-pronouns')">Đại từ nhân xưng</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-greetings')">Câu chào hỏi</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-relations')">Mối quan hệ</button>
-                    <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-countries')">Quốc gia</button>
-                </div>
-
-                <div id="cat-pronouns" class="sub-content active"><div class="flashcard-grid" id="pronouns-grid"></div></div>
-                <div id="cat-greetings" class="sub-content"><div class="flashcard-grid" id="greetings-grid"></div></div>
-                <div id="cat-relations" class="sub-content"><div class="flashcard-grid" id="relations-grid"></div></div>
-                <div id="cat-countries" class="sub-content"><div class="flashcard-grid" id="countries-grid"></div></div>
+                <div id="tab2-container"></div>
             </div>
 
-            <div id="tab-dictation" class="tab-content"><h3>Chữ Hán viết tay</h3></div>
-            <div id="tab-sentences" class="tab-content"><h3>Mẫu câu</h3></div>
+            <div id="tab-dictation" class="tab-content"><div class="placeholder-text">Nội dung đang được cập nhật...</div></div>
+            <div id="tab-sentences" class="tab-content"><div class="placeholder-text">Nội dung đang được cập nhật...</div></div>
             
             <!-- TAB 5: HỘI THOẠI -->
             <div id="tab-dialogue" class="tab-content">
-                <div class="dialogue-container">
-                    <div class="dialogue-section">
-                        <h4>Mẫu 1: Hỏi tên (Thông thường)</h4>
-                        <div class="chat-bubble speaker-a">
-                            <div class="avatar">A</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">你叫什么名字？<button class="chat-audio-btn" onclick="speakChinese('你叫什么名字？')">🔊</button></p>
-                                <p class="chat-text-py">Nǐ jiào shénme míngzi?</p>
-                            </div>
-                        </div>
-                        <div class="chat-bubble speaker-b">
-                            <div class="avatar">B</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">我叫……<button class="chat-audio-btn" onclick="speakChinese('我叫')">🔊</button></p>
-                                <p class="chat-text-py">Wǒ jiào...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dialogue-section">
-                        <h4>Mẫu 2: Hỏi họ (Thông thường)</h4>
-                        <div class="chat-bubble speaker-a">
-                            <div class="avatar">A</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">你姓什么？<button class="chat-audio-btn" onclick="speakChinese('你姓什么？')">🔊</button></p>
-                                <p class="chat-text-py">Nǐ xìng shénme?</p>
-                            </div>
-                        </div>
-                        <div class="chat-bubble speaker-b">
-                            <div class="avatar">B</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
-                                <p class="chat-text-py">Wǒ xìng...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dialogue-section">
-                        <h4>Mẫu 3: Hỏi họ (Trang trọng, lịch sự)</h4>
-                        <div class="chat-bubble speaker-a">
-                            <div class="avatar">A</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">请问您贵姓？<button class="chat-audio-btn" onclick="speakChinese('请问您贵姓？')">🔊</button></p>
-                                <p class="chat-text-py">Qǐngwèn nín guìxìng?</p>
-                            </div>
-                        </div>
-                        <div class="chat-bubble speaker-b">
-                            <div class="avatar">B</div>
-                            <div class="bubble-content">
-                                <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
-                                <p class="chat-text-py">Wǒ xìng...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div id="tab5-container"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // 已更新 lessonData：HSK1 为 Ngữ âm, Bài 1 ~ Bài 4；HSK2 为 Bài 5 ~ Bài 8
         const lessonData = {
             hsk1: ["Ngữ âm", "Bài 1", "Bài 2", "Bài 3", "Bài 4"],
             hsk2: ["Bài 5", "Bài 6", "Bài 7", "Bài 8"],
@@ -522,18 +450,6 @@
             }).join('');
         }
 
-        function renderAllGrids() {
-            document.getElementById("img-pronouns-grid").innerHTML = generateImgCardsHTML(pronounsList);
-            document.getElementById("img-greetings-grid").innerHTML = generateImgCardsHTML(greetingsList);
-            document.getElementById("img-relations-grid").innerHTML = generateImgCardsHTML(relationsList);
-            document.getElementById("img-countries-grid").innerHTML = generateImgCardsHTML(countriesList, true);
-
-            document.getElementById("pronouns-grid").innerHTML = generateCardsHTML(pronounsList);
-            document.getElementById("greetings-grid").innerHTML = generateCardsHTML(greetingsList);
-            document.getElementById("relations-grid").innerHTML = generateCardsHTML(relationsList);
-            document.getElementById("countries-grid").innerHTML = generateCardsHTML(countriesList);
-        }
-
         const levelSelect = document.getElementById("level-select");
         const lessonSelect = document.getElementById("lesson-select");
         const learningZone = document.getElementById("learning-zone");
@@ -543,9 +459,9 @@
             lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
             
             if (level && lessonData[level]) {
-                lessonData[level].forEach((item, index) => {
+                lessonData[level].forEach((item) => {
                     const opt = document.createElement("option");
-                    opt.value = "val_" + index;
+                    opt.value = item;
                     opt.textContent = item;
                     lessonSelect.appendChild(opt);
                 });
@@ -556,20 +472,117 @@
             learningZone.style.display = "none";
         }
 
-        levelSelect.addEventListener("change", updateLessonOptions);
+        function renderLessonContent() {
+            const level = levelSelect.value;
+            const lesson = lessonSelect.value;
 
-        lessonSelect.addEventListener("change", function() {
-            if (this.value !== "") {
-                learningZone.style.display = "block";
-                renderAllGrids();
-            } else {
+            if (!level || !lesson) {
                 learningZone.style.display = "none";
+                return;
             }
-        });
 
-        window.addEventListener("DOMContentLoaded", () => {
-            updateLessonOptions();
-        });
+            learningZone.style.display = "block";
+
+            const tab1Container = document.getElementById("tab1-container");
+            const tab2Container = document.getElementById("tab2-container");
+            const tab5Container = document.getElementById("tab5-container");
+
+            // 仅在选择 HSK1 且 Bài 1 时渲染具体4个分类卡片
+            if (level === "hsk1" && lesson === "Bài 1") {
+                tab1Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-pronouns')">Đại từ nhân xưng</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-greetings')">Câu chào hỏi</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-relations')">Mối quan hệ</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-countries')">Quốc gia</button>
+                    </div>
+                    <div id="cat-img-pronouns" class="sub-content active"><div class="flashcard-grid">${generateImgCardsHTML(pronounsList)}</div></div>
+                    <div id="cat-img-greetings" class="sub-content"><div class="flashcard-grid">${generateImgCardsHTML(greetingsList)}</div></div>
+                    <div id="cat-img-relations" class="sub-content"><div class="flashcard-grid">${generateImgCardsHTML(relationsList)}</div></div>
+                    <div id="cat-img-countries" class="sub-content"><div class="flashcard-grid">${generateImgCardsHTML(countriesList, true)}</div></div>
+                `;
+
+                tab2Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-pronouns')">Đại từ nhân xưng</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-greetings')">Câu chào hỏi</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-relations')">Mối quan hệ</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-countries')">Quốc gia</button>
+                    </div>
+                    <div id="cat-pronouns" class="sub-content active"><div class="flashcard-grid">${generateCardsHTML(pronounsList)}</div></div>
+                    <div id="cat-greetings" class="sub-content"><div class="flashcard-grid">${generateCardsHTML(greetingsList)}</div></div>
+                    <div id="cat-relations" class="sub-content"><div class="flashcard-grid">${generateCardsHTML(relationsList)}</div></div>
+                    <div id="cat-countries" class="sub-content"><div class="flashcard-grid">${generateCardsHTML(countriesList)}</div></div>
+                `;
+
+                tab5Container.innerHTML = `
+                    <div class="dialogue-container">
+                        <div class="dialogue-section">
+                            <h4>Mẫu 1: Hỏi tên (Thông thường)</h4>
+                            <div class="chat-bubble speaker-a">
+                                <div class="avatar">A</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">你叫什么名字？<button class="chat-audio-btn" onclick="speakChinese('你叫什么名字？')">🔊</button></p>
+                                    <p class="chat-text-py">Nǐ jiào shénme míngzi?</p>
+                                </div>
+                            </div>
+                            <div class="chat-bubble speaker-b">
+                                <div class="avatar">B</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">我叫……<button class="chat-audio-btn" onclick="speakChinese('我叫')">🔊</button></p>
+                                    <p class="chat-text-py">Wǒ jiào...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dialogue-section">
+                            <h4>Mẫu 2: Hỏi họ (Thông thường)</h4>
+                            <div class="chat-bubble speaker-a">
+                                <div class="avatar">A</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">你姓什么？<button class="chat-audio-btn" onclick="speakChinese('你姓什么？')">🔊</button></p>
+                                    <p class="chat-text-py">Nǐ xìng shénme?</p>
+                                </div>
+                            </div>
+                            <div class="chat-bubble speaker-b">
+                                <div class="avatar">B</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
+                                    <p class="chat-text-py">Wǒ xìng...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dialogue-section">
+                            <h4>Mẫu 3: Hỏi họ (Trang trọng, lịch sự)</h4>
+                            <div class="chat-bubble speaker-a">
+                                <div class="avatar">A</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">请问您贵姓？<button class="chat-audio-btn" onclick="speakChinese('请问您贵姓？')">🔊</button></p>
+                                    <p class="chat-text-py">Qǐngwèn nín guìxìng?</p>
+                                </div>
+                            </div>
+                            <div class="chat-bubble speaker-b">
+                                <div class="avatar">B</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
+                                    <p class="chat-text-py">Wǒ xìng...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 选择其他课程时的占位内容
+                const notAvailableHTML = `<div class="placeholder-text">Nội dung cho ${lesson} (${level.toUpperCase()}) đang được cập nhật...</div>`;
+                tab1Container.innerHTML = notAvailableHTML;
+                tab2Container.innerHTML = notAvailableHTML;
+                tab5Container.innerHTML = notAvailableHTML;
+            }
+        }
+
+        levelSelect.addEventListener("change", updateLessonOptions);
+        lessonSelect.addEventListener("change", renderLessonContent);
 
         function openTab(evt, tabId) {
             const tabContents = document.getElementsByClassName("tab-content");
@@ -581,7 +594,8 @@
         }
 
         function openSubCat(evt, catId) {
-            const subContents = evt.currentTarget.parentElement.parentElement.getElementsByClassName("sub-content");
+            const parent = evt.currentTarget.parentElement.parentElement;
+            const subContents = parent.getElementsByClassName("sub-content");
             for (let i = 0; i < subContents.length; i++) subContents[i].classList.remove("active");
             const subBtns = evt.currentTarget.parentElement.getElementsByClassName("sub-cat-btn");
             for (let i = 0; i < subBtns.length; i++) subBtns[i].classList.remove("active");
