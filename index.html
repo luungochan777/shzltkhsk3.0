@@ -428,9 +428,9 @@
             { word: "他", pinyin: "tā", img: "image/ta1.png" }, 
             { word: "她", pinyin: "tā", img: "image/ta2.png" }, 
             { word: "我们", pinyin: "wǒmen", img: "image/women.png" },
-            { word: "你们", pinyin: "nǐmen", img: "image/nimen.png"" }, 
-            { word: "他们", pinyin: "tāmen", icon: "img: "image/tamen1.png"" }, 
-            { word: "她们", pinyin: "tāmen", icon: "img: "image/tamen2.png"" }
+            { word: "你们", pinyin: "nǐmen", img: "image/nimen.png" }, 
+            { word: "他们", pinyin: "tāmen", img: "image/tamen1.png" }, 
+            { word: "她们", pinyin: "tāmen", img: "image/tamen2.png" }
         ];
 
         const greetingsList = [
@@ -574,7 +574,7 @@
             const lessonSelect = document.getElementById("lesson-select").value;
             const learningZone = document.getElementById("learning-zone");
 
-            if (levelSelect === "hsk1" && lessonSelect === "bài1") {
+            if (levelSelect === "hsk1" && (lessonSelect === "bài1" || lessonSelect === "bài1")) {
                 learningZone.style.display = "block";
                 renderAllGrids();
             } else if (levelSelect && lessonSelect) {
