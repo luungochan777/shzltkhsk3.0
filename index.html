@@ -264,10 +264,8 @@
             header h1 { font-size: 2.3rem; }
             header p { font-size: 1.2rem; }
             
-            /* 筛选栏横向排列 */
             .filter-bar { flex-direction: row; gap: 1.5rem; padding: 1.5rem; }
             
-            /* 电脑端网格切换为 4 列 */
             .flashcard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
             .flip-card { height: 210px; }
             .chinese-word { font-size: 3rem; }
@@ -279,7 +277,6 @@
             .chat-text-zh { font-size: 1.6rem; }
         }
 
-        /* 超大屏优化 */
         @media (min-width: 1100px) {
             .flashcard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.8rem; }
         }
@@ -425,7 +422,7 @@
         };
 
         const pronounsList = [
-            { word: "我", pinyin: "wǒ", img: "wo.png" }, 
+            { word: "我", pinyin: "wǒ", img: "Picture/HSK1-U1/wo.png" }, 
             { word: "你", pinyin: "nǐ", icon: "bi bi-person-fill-up" }, 
             { word: "您", pinyin: "nín", icon: "fa-solid fa-user-tie" },
             { word: "他", pinyin: "tā", icon: "fa-solid fa-user" }, 
