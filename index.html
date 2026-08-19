@@ -6,7 +6,7 @@
     <title>SHZ Lý Thường Kiệt - Tài liệu lớp HSK3.0</title>
     <!-- Nhúng bộ thư viện icon cờ quốc gia -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
-    <!-- Nhúng thư viện Font Awesome và Bootstrap Icons để làm hình ảnh minh họa -->
+    <!-- Nhúng thư viện Font Awesome và Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -17,7 +17,6 @@
             --border-radius: 12px;
         }
 
-        /* Tối ưu chống lag double-tap trên điện thoại */
         html, body {
             touch-action: manipulation;
         }
@@ -147,7 +146,7 @@
         .sub-content { display: none; }
         .sub-content.active { display: block; }
 
-        /* LƯỚI THẺ: 默认移动端 2 列 */
+        /* LƯỚI THẺ */
         .flashcard-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -155,7 +154,6 @@
             margin-top: 1rem;
         }
 
-        /* CẤU HÌNH THẺ GỐC */
         .flip-card {
             background-color: transparent;
             width: 100%;
@@ -218,11 +216,7 @@
             text-align: center;
         }
 
-        .topic-icon-display {
-            font-size: 3.8rem;
-            color: #555;
-        }
-
+        .topic-icon-display { font-size: 3.8rem; color: #555; }
         .flag-icon-display {
             font-size: 4.5rem;
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
@@ -240,7 +234,6 @@
             align-items: center;
             cursor: pointer;
         }
-        .audio-btn svg { width: 20px; height: 20px; }
 
         /* HỘI THOẠI BONG BÓNG */
         .dialogue-container { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
@@ -258,14 +251,11 @@
         .chat-text-py { font-size: 0.9rem; color: #666; margin: 0.2rem 0 0 0; font-style: italic; }
         .chat-audio-btn { background: transparent; border: none; cursor: pointer; padding: 4px; font-size: 1.1rem; vertical-align: middle; }
 
-        /* ================= MEDIA QUERIES (适应电脑桌面端) ================= */
         @media (min-width: 768px) {
             header { padding: 2.2rem 1rem; }
             header h1 { font-size: 2.3rem; }
             header p { font-size: 1.2rem; }
-            
             .filter-bar { flex-direction: row; gap: 1.5rem; padding: 1.5rem; }
-            
             .flashcard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
             .flip-card { height: 210px; }
             .chinese-word { font-size: 3rem; }
@@ -275,10 +265,6 @@
             .tab-btn { font-size: 1.05rem; padding: 1rem 1.8rem; }
             .sub-cat-btn { font-size: 0.95rem; padding: 0.6rem 1.4rem; }
             .chat-text-zh { font-size: 1.6rem; }
-        }
-
-        @media (min-width: 1100px) {
-            .flashcard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.8rem; }
         }
     </style>
 </head>
@@ -416,8 +402,15 @@
     </div>
 
     <script>
+        // 使用简单的 id 来关联课程，避免越南语拼写匹配问题
         const lessonData = {
-            hsk1: ["Ngữ âm", "Bài 1", "Bài 2", "Bài 3", "Bài 4"],
+            hsk1: [
+                { id: "lesson1", name: "Bài 1" },
+                { id: "phonetics", name: "Ngữ âm" },
+                { id: "lesson2", name: "Bài 2" },
+                { id: "lesson3", name: "Bài 3" },
+                { id: "lesson4", name: "Bài 4" }
+            ],
             hsk2: [], hsk31: [], hsk32: []
         };
 
@@ -553,13 +546,14 @@
             const levelSelect = document.getElementById("level-select");
             const lessonSelect = document.getElementById("lesson-select");
             const selectedLevel = levelSelect.value;
+            
             lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
             
             if (selectedLevel && lessonData[selectedLevel] && lessonData[selectedLevel].length > 0) {
                 lessonData[selectedLevel].forEach(lesson => {
                     const option = document.createElement("option");
-                    option.value = lesson.toLowerCase().replace(/\s+/g, '');
-                    option.textContent = lesson;
+                    option.value = lesson.id;
+                    option.textContent = lesson.name;
                     lessonSelect.appendChild(option);
                 });
                 lessonSelect.disabled = false;
@@ -574,7 +568,8 @@
             const lessonSelect = document.getElementById("lesson-select").value;
             const learningZone = document.getElementById("learning-zone");
 
-            if (levelSelect === "hsk1" && (lessonSelect === "bài1" || lessonSelect === "bài1")) {
+            // 只要选择了 lesson1 就会加载卡片内容
+            if (levelSelect === "hsk1" && lessonSelect === "lesson1") {
                 learningZone.style.display = "block";
                 renderAllGrids();
             } else if (levelSelect && lessonSelect) {
@@ -599,7 +594,6 @@
             for (let i = 0; i < tabBtns.length; i++) tabBtns[i].classList.remove("active");
             document.getElementById(tabId).classList.add("active");
             evt.currentTarget.classList.add("active");
-            
             evt.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 
@@ -612,7 +606,6 @@
             
             document.getElementById(catId).classList.add("active");
             evt.currentTarget.classList.add("active");
-            
             evt.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
     </script>
