@@ -15,6 +15,8 @@
             --secondary-color: #f5f5f5;
             --text-color: #333;
             --border-radius: 12px;
+            /* 定义标楷体字体族 */
+            --font-kaaiti: "DFKai-SB", "BiauKai", "Kaiti SC", "楷体", "STKaiti", serif;
         }
 
         html, body { touch-action: manipulation; }
@@ -195,8 +197,10 @@
             transform: rotateY(180deg);
         }
 
+        /* 汉字改用标楷体设置 */
         .chinese-word {
-            font-size: 2.2rem;
+            font-family: var(--font-kaaiti);
+            font-size: 2.5rem;
             font-weight: bold;
             color: var(--primary-color);
             margin: 0;
@@ -243,7 +247,8 @@
         .speaker-a .bubble-content { background-color: #f5f5f5; border-top-left-radius: 2px; }
         .speaker-b .bubble-content { background-color: #e8f8f5; border-top-left-radius: 2px; }
         
-        .chat-text-zh { font-size: 1.4rem; margin: 0; font-weight: bold; }
+        /* 对话框汉字改用标楷体设置 */
+        .chat-text-zh { font-family: var(--font-kaaiti); font-size: 1.6rem; margin: 0; font-weight: bold; }
         .chat-text-py { font-size: 0.9rem; color: #666; margin: 0.2rem 0 0 0; font-style: italic; }
         .chat-audio-btn { background: transparent; border: none; cursor: pointer; padding: 4px; font-size: 1.1rem; vertical-align: middle; }
 
@@ -254,13 +259,13 @@
             .filter-bar { flex-direction: row; gap: 1.5rem; padding: 1.5rem; }
             .flashcard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
             .flip-card { height: 210px; }
-            .chinese-word { font-size: 3rem; }
+            .chinese-word { font-size: 3.2rem; }
             .pinyin-word { font-size: 1.4rem; }
             .topic-icon-display { font-size: 4.8rem; }
             .flag-icon-display { font-size: 5.5rem; }
             .tab-btn { font-size: 1.05rem; padding: 1rem 1.8rem; }
             .sub-cat-btn { font-size: 0.95rem; padding: 0.6rem 1.4rem; }
-            .chat-text-zh { font-size: 1.6rem; }
+            .chat-text-zh { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -422,7 +427,7 @@
             { word: "您好", pinyin: "nín hǎo", icon: "fa-solid fa-hands-bowing" }, 
             { word: "老师好", pinyin: "lǎoshī hǎo", icon: "fa-solid fa-chalkboard-user" },
             { word: "你们好", pinyin: "nǐmen hǎo", icon: "bi bi-chat-square-heart" }, 
-            { word: "同學們好", pinyin: "tóngxuémen hǎo", icon: "fa-solid fa-graduation-cap" }, 
+            { word: "同学们好", pinyin: "tóngxuémen hǎo", icon: "fa-solid fa-graduation-cap" }, 
             { word: "大家好", pinyin: "dàjiā hǎo", icon: "bi bi-megaphone" }
         ];
 
@@ -528,7 +533,6 @@
             document.getElementById("countries-grid").innerHTML = generateCardsHTML(countriesList);
         }
 
-        // 绑定事件与初始化逻辑
         const levelSelect = document.getElementById("level-select");
         const lessonSelect = document.getElementById("lesson-select");
         const learningZone = document.getElementById("learning-zone");
@@ -562,7 +566,6 @@
             }
         });
 
-        // 页面刚打开时自动初始化一次选项
         window.addEventListener("DOMContentLoaded", () => {
             updateLessonOptions();
         });
