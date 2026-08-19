@@ -17,9 +17,7 @@
             --border-radius: 12px;
         }
 
-        html, body {
-            touch-action: manipulation;
-        }
+        html, body { touch-action: manipulation; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -69,7 +67,7 @@
             font-size: 1rem;
             outline: none;
             background-color: #fff;
-            -webkit-appearance: none;
+            cursor: pointer;
         }
 
         .tabs-container {
@@ -173,9 +171,7 @@
             border-radius: var(--border-radius);
         }
 
-        .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
-        }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
 
         .flip-card-front, .flip-card-back {
             position: absolute;
@@ -280,9 +276,9 @@
         <div class="filter-bar">
             <div class="filter-group">
                 <label for="level-select">Trình độ</label>
-                <select id="level-select" onchange="updateLessons()">
+                <select id="level-select">
                     <option value="">-- Chọn trình độ --</option>
-                    <option value="hsk1">HSK1</option>
+                    <option value="hsk1" selected>HSK1</option>
                     <option value="hsk2">HSK2</option>
                     <option value="hsk31">HSK3.1</option>
                     <option value="hsk32">HSK3.2</option>
@@ -291,7 +287,7 @@
 
             <div class="filter-group">
                 <label for="lesson-select">Bài học</label>
-                <select id="lesson-select" disabled onchange="checkSelection()">
+                <select id="lesson-select">
                     <option value="">-- Chọn bài --</option>
                 </select>
             </div>
@@ -402,16 +398,11 @@
     </div>
 
     <script>
-        // 使用简单的 id 来关联课程，避免越南语拼写匹配问题
         const lessonData = {
-            hsk1: [
-                { id: "lesson1", name: "Bài 1" },
-                { id: "phonetics", name: "Ngữ âm" },
-                { id: "lesson2", name: "Bài 2" },
-                { id: "lesson3", name: "Bài 3" },
-                { id: "lesson4", name: "Bài 4" }
-            ],
-            hsk2: [], hsk31: [], hsk32: []
+            hsk1: ["Ngữ âm", "Bài 1", "Bài 2", "Bài 3", "Bài 4"],
+            hsk2: ["Bài 1", "Bài 2"],
+            hsk31: ["Bài 1"],
+            hsk32: ["Bài 1"]
         };
 
         const pronounsList = [
@@ -431,7 +422,7 @@
             { word: "您好", pinyin: "nín hǎo", icon: "fa-solid fa-hands-bowing" }, 
             { word: "老师好", pinyin: "lǎoshī hǎo", icon: "fa-solid fa-chalkboard-user" },
             { word: "你们好", pinyin: "nǐmen hǎo", icon: "bi bi-chat-square-heart" }, 
-            { word: "同学们好", pinyin: "tóngxuémen hǎo", icon: "fa-solid fa-graduation-cap" }, 
+            { word: "同學們好", pinyin: "tóngxuémen hǎo", icon: "fa-solid fa-graduation-cap" }, 
             { word: "大家好", pinyin: "dàjiā hǎo", icon: "bi bi-megaphone" }
         ];
 
@@ -463,8 +454,7 @@
         function toggleFlip(cardElement, wordText) {
             cardElement.classList.toggle("flipped");
             if (cardElement.classList.contains("flipped")) {
-                const cleanText = wordText.replace(/<br>/g, '');
-                speakChinese(cleanText);
+                speakChinese(wordText.replace(/<br>/g, ''));
             }
         }
 
@@ -502,13 +492,9 @@
                 if (isCountry) {
                     frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
                 } else if (item.img) {
-                    frontContent = `
-                        <img src="${item.img}" style="max-width:85%; max-height:110px; width:auto; height:auto; object-fit:contain;" alt="${item.word}">
-                    `;
+                    frontContent = `<img src="${item.img}" style="max-width:85%; max-height:110px; width:auto; height:auto; object-fit:contain;" alt="${item.word}">`;
                 } else {
-                    frontContent = `
-                        <i class="${item.icon} topic-icon-display"></i>
-                    `;
+                    frontContent = `<i class="${item.icon} topic-icon-display"></i>`;
                 }
 
                 return `
@@ -542,50 +528,44 @@
             document.getElementById("countries-grid").innerHTML = generateCardsHTML(countriesList);
         }
 
-        function updateLessons() {
-            const levelSelect = document.getElementById("level-select");
-            const lessonSelect = document.getElementById("lesson-select");
-            const selectedLevel = levelSelect.value;
-            
+        // 绑定事件与初始化逻辑
+        const levelSelect = document.getElementById("level-select");
+        const lessonSelect = document.getElementById("lesson-select");
+        const learningZone = document.getElementById("learning-zone");
+
+        function updateLessonOptions() {
+            const level = levelSelect.value;
             lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
             
-            if (selectedLevel && lessonData[selectedLevel] && lessonData[selectedLevel].length > 0) {
-                lessonData[selectedLevel].forEach(lesson => {
-                    const option = document.createElement("option");
-                    option.value = lesson.id;
-                    option.textContent = lesson.name;
-                    lessonSelect.appendChild(option);
+            if (level && lessonData[level]) {
+                lessonData[level].forEach((item, index) => {
+                    const opt = document.createElement("option");
+                    opt.value = "val_" + index;
+                    opt.textContent = item;
+                    lessonSelect.appendChild(opt);
                 });
-                lessonSelect.disabled = false;
+                lessonSelect.removeAttribute("disabled");
             } else {
-                lessonSelect.disabled = true;
+                lessonSelect.setAttribute("disabled", "true");
             }
-            document.getElementById("learning-zone").style.display = "none";
+            learningZone.style.display = "none";
         }
 
-        function checkSelection() {
-            const levelSelect = document.getElementById("level-select").value;
-            const lessonSelect = document.getElementById("lesson-select").value;
-            const learningZone = document.getElementById("learning-zone");
+        levelSelect.addEventListener("change", updateLessonOptions);
 
-            // 只要选择了 lesson1 就会加载卡片内容
-            if (levelSelect === "hsk1" && lessonSelect === "lesson1") {
+        lessonSelect.addEventListener("change", function() {
+            if (this.value !== "") {
                 learningZone.style.display = "block";
                 renderAllGrids();
-            } else if (levelSelect && lessonSelect) {
-                learningZone.style.display = "block";
-                document.getElementById("img-pronouns-grid").innerHTML = "<p style='color:#888; font-style:italic; padding: 10px;'>Bài học này đang được soạn thảo...</p>";
-                document.getElementById("img-greetings-grid").innerHTML = "";
-                document.getElementById("img-relations-grid").innerHTML = "";
-                document.getElementById("img-countries-grid").innerHTML = "";
-                document.getElementById("pronouns-grid").innerHTML = "";
-                document.getElementById("greetings-grid").innerHTML = "";
-                document.getElementById("relations-grid").innerHTML = "";
-                document.getElementById("countries-grid").innerHTML = "";
             } else {
                 learningZone.style.display = "none";
             }
-        }
+        });
+
+        // 页面刚打开时自动初始化一次选项
+        window.addEventListener("DOMContentLoaded", () => {
+            updateLessonOptions();
+        });
 
         function openTab(evt, tabId) {
             const tabContents = document.getElementsByClassName("tab-content");
@@ -594,19 +574,15 @@
             for (let i = 0; i < tabBtns.length; i++) tabBtns[i].classList.remove("active");
             document.getElementById(tabId).classList.add("active");
             evt.currentTarget.classList.add("active");
-            evt.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 
         function openSubCat(evt, catId) {
             const subContents = evt.currentTarget.parentElement.parentElement.getElementsByClassName("sub-content");
             for (let i = 0; i < subContents.length; i++) subContents[i].classList.remove("active");
-            
             const subBtns = evt.currentTarget.parentElement.getElementsByClassName("sub-cat-btn");
             for (let i = 0; i < subBtns.length; i++) subBtns[i].classList.remove("active");
-            
             document.getElementById(catId).classList.add("active");
             evt.currentTarget.classList.add("active");
-            evt.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
     </script>
 </body>
