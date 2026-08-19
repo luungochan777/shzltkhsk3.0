@@ -224,14 +224,6 @@
             margin-bottom: 0.3rem;
         }
 
-        /* 自定义图片控制样式 */
-        .card-img-display {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 0.3rem;
-        }
-
         .flag-icon-display {
             font-size: 4.5rem;
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
@@ -289,7 +281,6 @@
             .chinese-word { font-size: 3.2rem; }
             .pinyin-word { font-size: 1.5rem; }
             .topic-icon-display { font-size: 4.5rem; }
-            .card-img-display { width: 100px; height: 100px; }
             .flag-icon-display { font-size: 5.5rem; }
             .tab-btn { font-size: 1rem; padding: 1rem 1.5rem; }
             .sub-cat-btn { font-size: 1rem; padding: 0.5rem 1.2rem; }
@@ -436,9 +427,8 @@
             hsk2: [], hsk31: [], hsk32: []
         };
 
-        // 已将“我”加上图片路径 Lesson%201/wo.png
         const pronounsList = [
-            { word: "我", pinyin: "wǒ", imgSrc: "Lesson%201/wo.png", icon: "bi bi-person-fill-check" }, 
+            { word: "我", pinyin: "wǒ", img: "wo.png" }, 
             { word: "你", pinyin: "nǐ", icon: "bi bi-person-fill-up" }, 
             { word: "您", pinyin: "nín", icon: "fa-solid fa-user-tie" },
             { word: "他", pinyin: "tā", icon: "fa-solid fa-user" }, 
@@ -519,20 +509,17 @@
             `).join('');
         }
 
-        // 核心修改：支持图片优先显示，没有图片时退回显示图标
         function generateImgCardsHTML(dataList, isCountry = false) {
             return dataList.map(item => {
                 let frontContent = "";
                 if (isCountry) {
                     frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
-                } else if (item.imgSrc) {
-                    // 如果定义了 imgSrc，直接渲染图片 <img> 标签
+                } else if (item.img) {
                     frontContent = `
-                        <img src="${item.imgSrc}" alt="${item.word}" class="card-img-display" />
+                        <img src="${item.img}" style="max-width:80%; max-height:100px; object-fit:contain; margin-bottom:0.3rem;" alt="${item.word}">
                         <div class="hint-text">(${item.pinyin})</div>
                     `;
                 } else {
-                    // 默认显示 Icon
                     frontContent = `
                         <i class="${item.icon} topic-icon-display"></i>
                         <div class="hint-text">(${item.pinyin})</div>
