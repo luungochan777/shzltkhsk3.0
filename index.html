@@ -33,12 +33,12 @@
             background-color: var(--primary-color);
             color: white;
             text-align: center;
-            padding: 1.5rem 1rem;
+            padding: 1.2rem 1rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
-        header p { margin: 0.3rem 0 0 0; font-size: 1rem; opacity: 0.9; }
+        header h1 { margin: 0; font-size: 1.6rem; font-weight: 700; }
+        header p { margin: 0.3rem 0 0 0; font-size: 0.95rem; opacity: 0.9; }
 
         .container {
             max-width: 1200px;
@@ -109,9 +109,6 @@
             color: #777;
             font-size: 1.1rem;
             padding: 4px;
-        }
-        .toggle-password-btn:hover {
-            color: var(--primary-color);
         }
 
         .password-input-group { 
@@ -208,7 +205,7 @@
         .sub-categories {
             display: flex;
             gap: 0.6rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             overflow-x: auto;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
@@ -236,18 +233,77 @@
         .sub-content { display: none; }
         .sub-content.active { display: block; }
 
-        /* LƯỚI THẺ FLASHCARD */
-        .flashcard-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
+        /* ====== 手機端翻頁 Carousel 樣式 ====== */
+        .flashcard-carousel-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
+        .flashcard-carousel {
+            width: 100%;
+            height: 320px; /* 大尺寸卡片，便於手機查看 */
+            position: relative;
+        }
+
+        .flashcard-carousel .flip-card {
+            display: none; /* 預設隱藏所有卡片 */
+            width: 100%;
+            height: 100%;
+        }
+
+        .flashcard-carousel .flip-card.active-slide {
+            display: block; /* 僅顯示當前頁卡片 */
+        }
+
+        /* 頁碼控制器與按鈕 */
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 1.2rem;
+            padding: 0 0.5rem;
+            box-sizing: border-box;
+        }
+
+        .carousel-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .carousel-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .page-indicator {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            background: #fff0f0;
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* ====== 卡片內部通用樣式 ====== */
         .flip-card {
             background-color: transparent;
-            width: 100%;
-            height: 180px;
             perspective: 1000px;
             cursor: pointer;
         }
@@ -259,7 +315,7 @@
             text-align: center;
             transition: transform 0.5s;
             transform-style: preserve-3d;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             border-radius: var(--border-radius);
         }
 
@@ -279,7 +335,7 @@
             background-color: white;
             border: 1px solid #eee;
             box-sizing: border-box;
-            padding: 0.8rem;
+            padding: 1rem;
         }
 
         .flip-card-back {
@@ -289,7 +345,7 @@
 
         .chinese-word {
             font-family: var(--font-simsun);
-            font-size: 2.5rem;
+            font-size: 3.2rem;
             font-weight: bold;
             color: var(--primary-color);
             margin: 0;
@@ -298,26 +354,25 @@
         }
 
         .pinyin-word {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: var(--primary-color);
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
             text-align: center;
         }
 
-        .topic-icon-display { font-size: 3.8rem; color: #555; }
         .flag-icon-display {
-            font-size: 4.5rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            border-radius: 4px;
+            font-size: 7rem;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+            border-radius: 6px;
         }
 
         .audio-btn {
             background: #fff;
             border: 2px solid var(--primary-color);
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -346,17 +401,35 @@
             font-size: 1.1rem;
         }
 
+        /* ====== 電腦端（寬屏）恢復網格排列 ====== */
         @media (min-width: 768px) {
-            header { padding: 2.2rem 1rem; }
-            header h1 { font-size: 2.3rem; }
-            header p { font-size: 1.2rem; }
+            header { padding: 2rem 1rem; }
+            header h1 { font-size: 2.2rem; }
             .filter-bar { flex-direction: row; gap: 1.5rem; padding: 1.5rem; }
-            .flashcard-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
-            .flip-card { height: 210px; }
-            .chinese-word { font-size: 3.2rem; }
-            .pinyin-word { font-size: 1.4rem; }
-            .topic-icon-display { font-size: 4.8rem; }
-            .flag-icon-display { font-size: 5.5rem; }
+            
+            .flashcard-carousel-wrapper {
+                max-width: 100%;
+            }
+
+            .flashcard-carousel {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.5rem;
+                height: auto !important;
+            }
+
+            .flashcard-carousel .flip-card {
+                display: block !important;
+                height: 210px;
+            }
+
+            .carousel-controls {
+                display: none !important; /* 電腦端隱藏頁碼控制按鈕 */
+            }
+
+            .chinese-word { font-size: 3rem; }
+            .pinyin-word { font-size: 1.3rem; }
+            .flag-icon-display { font-size: 5rem; }
             .tab-btn { font-size: 1.05rem; padding: 1rem 1.8rem; }
             .sub-cat-btn { font-size: 0.95rem; padding: 0.5rem 1.2rem; }
             .chat-text-zh { font-size: 1.8rem; }
@@ -467,27 +540,26 @@
             hsk32: ["Bài 1 - 他叫什么名字"]
         };
 
-        // Danh sách mật khẩu tương ứng (Chữ cái đầu tiên của Pinyin từng từ)
         const lessonPasswords = {
             "Ngữ âm": "nguam",
-            "Bài 1 - 他叫什么名字": "tjsmmz",      // tā jiào shén me míng zi
-            "Bài 2 - 我和我的家人": "whwdjr",      // wǒ hé wǒ de jiā rén
-            "Bài 3 - 你每天几点睡觉": "nmtjdsj",    // nǐ měi tiān jǐ diǎn shuì jiào
-            "Bài 4 - 一共多少钱": "ygdsq",        // yī gòng duō shao qián
-            "Bài 5 - 你去那儿干什么": "nqngsm",     // nǐ qù nà er gàn shén me
-            "Bài 6 - 手机在桌子上": "sjzzzs"       // shǒu jī zài zhuō zi shang
+            "Bài 1 - 他叫什么名字": "tjsmmz",
+            "Bài 2 - 我和我的家人": "whwdjr",
+            "Bài 3 - 你每天几点睡觉": "nmtjdsj",
+            "Bài 4 - 一共多少钱": "ygdsq",
+            "Bài 5 - 你去那儿干什么": "nqngsm",
+            "Bài 6 - 手机在桌子上": "sjzzzs"
         };
 
         const pronounsList = [
-            { word: "我", pinyin: "wǒ"}, 
-            { word: "你", pinyin: "nǐ"}, 
-            { word: "您", pinyin: "nín"},
-            { word: "他", pinyin: "tā", img: "ta1.png" }, 
-            { word: "她", pinyin: "tā", img: "ta2.png" }, 
-            { word: "我们", pinyin: "wǒmen", img: "women.png" },
-            { word: "你们", pinyin: "nǐmen", img: "nimen.png" }, 
-            { word: "他们", pinyin: "tāmen", img: "tamen1.png" }, 
-            { word: "她们", pinyin: "tāmen", img: "tamen2.png" }
+            { word: "我", pinyin: "wǒ" }, 
+            { word: "你", pinyin: "nǐ" }, 
+            { word: "您", pinyin: "nín" },
+            { word: "他", pinyin: "tā" }, 
+            { word: "她", pinyin: "tā" }, 
+            { word: "我们", pinyin: "wǒmen" },
+            { word: "你们", pinyin: "nǐmen" }, 
+            { word: "他们", pinyin: "tāmen" }, 
+            { word: "她们", pinyin: "tāmen" }
         ];
 
         const greetingsList = [
@@ -531,27 +603,9 @@
             { word: "食堂", pinyin: "shítáng" },
             { word: "商场", pinyin: "shāngchǎng" },
             { word: "飞机场", pinyin: "fēijīchǎng" },
-            { word: "图书馆", pinyin: "túshūguǎn" },
+            { word: "図書館", pinyin: "túshūguǎn" },
             { word: "体育馆", pinyin: "tǐyùguǎn" }
         ];
-
-        // 转换带声调拼音为无声调拼音的文件名
-        function removeTones(pinyin) {
-            const toneMap = {
-                'ā': 'a', 'á': 'a', 'ǎ': 'a', 'à': 'a',
-                'ō': 'o', 'ó': 'o', 'ǒ': 'o', 'ò': 'o',
-                'ē': 'e', 'é': 'e', 'ě': 'e', 'è': 'e',
-                'ī': 'i', 'í': 'i', 'ǐ': 'i', 'ì': 'i',
-                'ū': 'u', 'ú': 'u', 'ǔ': 'u', 'ù': 'u',
-                'ǖ': 'v', 'ǘ': 'v', 'ǚ': 'v', 'ǜ': 'v', 'ü': 'v',
-                'Ń': 'N', 'Ň': 'N', 'ǹ': 'n', 'ń': 'n', 'ň': 'n'
-            };
-
-            return pinyin
-                .toLowerCase()
-                .replace(/[āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜüńňǹ]/g, char => toneMap[char] || char)
-                .replace(/[^a-z]/g, '');
-        }
 
         function toggleFlip(cardElement, wordText) {
             cardElement.classList.toggle("flipped");
@@ -570,9 +624,10 @@
             }
         }
 
-        function generateCardsHTML(dataList) {
-            return dataList.map(item => `
-                <div class="flip-card" onclick="toggleFlip(this, '${item.word}')">
+        // 渲染純文字 Flashcard + 包裹翻頁組件
+        function renderCardsContainer(dataList, containerId) {
+            const cardsHTML = dataList.map((item, index) => `
+                <div class="flip-card ${index === 0 ? 'active-slide' : ''}" onclick="toggleFlip(this, '${item.word}')">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
                             <div class="chinese-word">${item.word}</div>
@@ -586,32 +641,36 @@
                     </div>
                 </div>
             `).join('');
+
+            return buildCarouselWrapper(cardsHTML, dataList.length, containerId);
         }
 
-        function generateImgCardsHTML(dataList, isCountry = false) {
-            return dataList.map(item => {
+        // 渲染圖片 Flashcard + 包裹翻頁組件
+        function renderImgCardsContainer(dataList, containerId, isCountry = false) {
+            const cardsHTML = dataList.map((item, index) => {
                 let frontContent = "";
                 if (isCountry) {
                     frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
                 } else {
-                    // 优先使用自定义的 item.img，否则使用去声调拼音拼接 .png
-                    const imgSrc = item.img ? `image/${item.img}` : `image/${removeTones(item.pinyin)}.png`;
+                    const cleanWord = item.word.replace(/<br>/g, '');
+                    const fileName = item.img ? item.img : `${cleanWord}.png`;
+                    const imgSrc = `image/${fileName}`;
                     
                     frontContent = `<img src="${imgSrc}" 
-                        style="max-width:95%; max-height:180px; width:auto; height:auto; object-fit:contain;" 
+                        style="max-width:92%; max-height:200px; width:auto; height:auto; object-fit:contain;" 
                         alt="${item.word}"
                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'chinese-word\\'>${item.word}</div>';">`;
                 }
 
                 return `
-                    <div class="flip-card" onclick="toggleFlip(this, '${item.word}')">
+                    <div class="flip-card ${index === 0 ? 'active-slide' : ''}" onclick="toggleFlip(this, '${item.word}')">
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 ${frontContent}
                             </div>
                             <div class="flip-card-back">
-                                <div class="chinese-word" style="font-size: 2.2rem; margin-bottom:0.8rem;">${item.word}</div>
-                                <div class="pinyin-word" style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:normal; color:#666;">(${item.pinyin.replace(/<br>/g, ' ')})</div>
+                                <div class="chinese-word" style="font-size: 2.8rem; margin-bottom:0.8rem;">${item.word}</div>
+                                <div class="pinyin-word" style="font-size:1.2rem; margin-bottom:1rem; font-weight:normal; color:#666;">(${item.pinyin.replace(/<br>/g, ' ')})</div>
                                 <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word.replace(/<br>/g, '')}')" title="Nghe phát âm">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="#d32f2f"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                                 </button>
@@ -620,6 +679,106 @@
                     </div>
                 `;
             }).join('');
+
+            return buildCarouselWrapper(cardsHTML, dataList.length, containerId);
+        }
+
+        // 組裝包含頁碼與控制按鈕的包裹 HTML
+        function buildCarouselWrapper(cardsHTML, totalCount, containerId) {
+            return `
+                <div class="flashcard-carousel-wrapper" id="wrapper-${containerId}">
+                    <div class="flashcard-carousel" id="${containerId}">
+                        ${cardsHTML}
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-btn" id="prev-btn-${containerId}" onclick="prevCard('${containerId}')" disabled>
+                            <i class="fa-solid fa-chevron-left"></i> 前一張
+                        </button>
+                        <span class="page-indicator" id="page-indicator-${containerId}">1 / ${totalCount}</span>
+                        <button class="carousel-btn" id="next-btn-${containerId}" onclick="nextCard('${containerId}')" ${totalCount <= 1 ? 'disabled' : ''}>
+                            下一張 <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ====== 翻頁邏輯與頁碼更新 ======
+        const activeCardIndices = {};
+
+        function updateCarousel(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const cards = container.querySelectorAll('.flip-card');
+            const total = cards.length;
+            let currentIndex = activeCardIndices[containerId] || 0;
+
+            cards.forEach((card, idx) => {
+                card.classList.remove('active-slide');
+                card.classList.remove('flipped'); // 切換卡片時自動重置翻牌狀態
+                if (idx === currentIndex) {
+                    card.classList.add('active-slide');
+                }
+            });
+
+            // 更新頁碼與按鈕
+            const pageIndicator = document.getElementById(`page-indicator-${containerId}`);
+            const prevBtn = document.getElementById(`prev-btn-${containerId}`);
+            const nextBtn = document.getElementById(`next-btn-${containerId}`);
+
+            if (pageIndicator) pageIndicator.textContent = `${currentIndex + 1} / ${total}`;
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === total - 1;
+        }
+
+        function nextCard(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const total = container.querySelectorAll('.flip-card').length;
+            let currentIndex = activeCardIndices[containerId] || 0;
+
+            if (currentIndex < total - 1) {
+                activeCardIndices[containerId] = currentIndex + 1;
+                updateCarousel(containerId);
+            }
+        }
+
+        function prevCard(containerId) {
+            let currentIndex = activeCardIndices[containerId] || 0;
+            if (currentIndex > 0) {
+                activeCardIndices[containerId] = currentIndex - 1;
+                updateCarousel(containerId);
+            }
+        }
+
+        // ====== 手機端左右觸控滑動切換 ======
+        function initSwipeSupport(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            container.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            container.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const diffX = touchEndX - touchStartX;
+                if (Math.abs(diffX) > 40) { // 滑動距離大於 40px
+                    if (diffX < 0) {
+                        nextCard(containerId);
+                    } else {
+                        prevCard(containerId);
+                    }
+                }
+            }
         }
 
         const levelSelect = document.getElementById("level-select");
@@ -630,7 +789,6 @@
         const passError = document.getElementById("pass-error");
         const toggleIcon = document.getElementById("toggle-icon");
 
-        // Hàm chuyển đổi ẩn/hiện mật khẩu
         function togglePasswordVisibility() {
             if (passInput.type === "password") {
                 passInput.type = "text";
@@ -727,10 +885,10 @@
                         <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-relations')">Mối quan hệ</button>
                         <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-countries')">Quốc gia</button>
                     </div>
-                    <div id="cat-img-pronouns" class="sub-content active"><div class="flashcard-grid">${generateImgCardsHTML(pronounsList)}</div></div>
-                    <div id="cat-img-greetings" class="sub-content"><div class="flashcard-grid">${generateImgCardsHTML(greetingsList)}</div></div>
-                    <div id="cat-img-relations" class="sub-content"><div class="flashcard-grid">${generateImgCardsHTML(relationsList)}</div></div>
-                    <div id="cat-img-countries" class="sub-content"><div class="flashcard-grid">${generateImgCardsHTML(countriesList, true)}</div></div>
+                    <div id="cat-img-pronouns" class="sub-content active">${renderImgCardsContainer(pronounsList, 'img-pronouns')}</div>
+                    <div id="cat-img-greetings" class="sub-content">${renderImgCardsContainer(greetingsList, 'img-greetings')}</div>
+                    <div id="cat-img-relations" class="sub-content">${renderImgCardsContainer(relationsList, 'img-relations')}</div>
+                    <div id="cat-img-countries" class="sub-content">${renderImgCardsContainer(countriesList, 'img-countries', true)}</div>
                 `;
 
                 tab2Container.innerHTML = `
@@ -740,11 +898,18 @@
                         <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-relations')">Mối quan hệ</button>
                         <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-countries')">Quốc gia</button>
                     </div>
-                    <div id="cat-pronouns" class="sub-content active"><div class="flashcard-grid">${generateCardsHTML(pronounsList)}</div></div>
-                    <div id="cat-greetings" class="sub-content"><div class="flashcard-grid">${generateCardsHTML(greetingsList)}</div></div>
-                    <div id="cat-relations" class="sub-content"><div class="flashcard-grid">${generateCardsHTML(relationsList)}</div></div>
-                    <div id="cat-countries" class="sub-content"><div class="flashcard-grid">${generateCardsHTML(countriesList)}</div></div>
+                    <div id="cat-pronouns" class="sub-content active">${renderCardsContainer(pronounsList, 'txt-pronouns')}</div>
+                    <div id="cat-greetings" class="sub-content">${renderCardsContainer(greetingsList, 'txt-greetings')}</div>
+                    <div id="cat-relations" class="sub-content">${renderCardsContainer(relationsList, 'txt-relations')}</div>
+                    <div id="cat-countries" class="sub-content">${renderCardsContainer(countriesList, 'txt-countries')}</div>
                 `;
+
+                // 初始化滑動手勢
+                ['img-pronouns', 'img-greetings', 'img-relations', 'img-countries', 
+                 'txt-pronouns', 'txt-greetings', 'txt-relations', 'txt-countries'].forEach(id => {
+                    activeCardIndices[id] = 0;
+                    initSwipeSupport(id);
+                });
 
                 sentencesContainer.innerHTML = `
                     <div class="dialogue-container">
@@ -809,7 +974,7 @@
                         <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-places')">Nơi chốn</button>
                     </div>
                     <div id="cat-img-places" class="sub-content active">
-                        <div class="flashcard-grid">${generateImgCardsHTML(placesList)}</div>
+                        ${renderImgCardsContainer(placesList, 'img-places')}
                     </div>
                 `;
 
@@ -818,9 +983,14 @@
                         <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-places')">Nơi chốn</button>
                     </div>
                     <div id="cat-places" class="sub-content active">
-                        <div class="flashcard-grid">${generateCardsHTML(placesList)}</div>
+                        ${renderCardsContainer(placesList, 'txt-places')}
                     </div>
                 `;
+
+                ['img-places', 'txt-places'].forEach(id => {
+                    activeCardIndices[id] = 0;
+                    initSwipeSupport(id);
+                });
 
                 sentencesContainer.innerHTML = `<div class="placeholder-text">Nội dung mẫu câu cho ${lesson} đang được cập nhật...</div>`;
             } else {
