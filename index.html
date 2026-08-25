@@ -598,7 +598,7 @@
                     const imgSrc = item.img ? `image/${item.img}` : `image/${removeTones(item.pinyin)}.png`;
                     
                     frontContent = `<img src="${imgSrc}" 
-                        style="max-width:85%; max-height:110px; width:auto; height:auto; object-fit:contain;" 
+                        style="max-width:95%; max-height:150px; width:auto; height:auto; object-fit:contain;" 
                         alt="${item.word}"
                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'chinese-word\\'>${item.word}</div>';">`;
                 }
