@@ -652,7 +652,6 @@
             return buildCarouselWrapper(cardsHTML, dataList.length, containerId);
         }
 
-        // 修正後的圖片渲染邏輯
         function renderImgCardsContainer(dataList, containerId, isCountry = false) {
             const cardsHTML = dataList.map((item, index) => {
                 let frontContent = "";
@@ -801,6 +800,7 @@
             }
         }
 
+        // 動態更新 Bài học 下拉選單內容
         function updateLessonOptions() {
             const level = levelSelect.value;
             lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
@@ -1036,13 +1036,14 @@
             evt.currentTarget.classList.add("active");
         }
 
+        // 修復自動讀取緩存時未激活下拉選單的問題
         window.addEventListener("DOMContentLoaded", () => {
             const savedLevel = localStorage.getItem('savedLevel');
             const savedLesson = localStorage.getItem('savedLesson');
 
             if (savedLevel && lessonData[savedLevel]) {
                 levelSelect.value = savedLevel;
-                updateLessonOptions();
+                updateLessonOptions(); // 確保重新解鎖並填入 Bài học 選項列表
                 
                 if (savedLesson) {
                     lessonSelect.value = savedLesson;
