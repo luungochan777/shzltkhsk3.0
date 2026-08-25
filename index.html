@@ -68,6 +68,22 @@
             cursor: pointer;
         }
 
+        .reset-btn-wrapper {
+            text-align: right;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .reset-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .reset-btn:hover { color: var(--primary-color); }
+
         .password-box {
             display: none;
             background: white;
@@ -403,27 +419,10 @@
             header { padding: 2rem 1rem; }
             header h1 { font-size: 2.2rem; }
             .filter-bar { flex-direction: row; gap: 1.5rem; padding: 1.5rem; }
-            
-            .flashcard-carousel-wrapper {
-                max-width: 100%;
-            }
-
-            .flashcard-carousel {
-                display: grid !important;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 1.5rem;
-                height: auto !important;
-            }
-
-            .flashcard-carousel .flip-card {
-                display: block !important;
-                height: 210px;
-            }
-
-            .carousel-controls {
-                display: none !important;
-            }
-
+            .flashcard-carousel-wrapper { max-width: 100%; }
+            .flashcard-carousel { display: grid !important; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; height: auto !important; }
+            .flashcard-carousel .flip-card { display: block !important; height: 210px; }
+            .carousel-controls { display: none !important; }
             .chinese-word { font-size: 3rem; }
             .pinyin-word { font-size: 1.3rem; }
             .flag-icon-display { font-size: 5rem; }
@@ -441,24 +440,31 @@
     </header>
 
     <div class="container">
-        <div class="filter-bar">
-            <div class="filter-group">
-                <label for="level-select">Trình độ</label>
-                <select id="level-select">
-                    <option value="">-- Chọn trình độ --</option>
-                    <option value="hsk1">HSK1</option>
-                    <option value="hsk2">HSK2</option>
-                    <option value="hsk31">HSK3.1</option>
-                    <option value="hsk32">HSK3.2</option>
-                </select>
-            </div>
+        <!-- autocomplete="off" 避免瀏覽器記住已禁用的選項 -->
+        <form autocomplete="off" onsubmit="return false;">
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label for="level-select">Trình độ</label>
+                    <select id="level-select">
+                        <option value="">-- Chọn trình độ --</option>
+                        <option value="hsk1">HSK1</option>
+                        <option value="hsk2">HSK2</option>
+                        <option value="hsk31">HSK3.1</option>
+                        <option value="hsk32">HSK3.2</option>
+                    </select>
+                </div>
 
-            <div class="filter-group">
-                <label for="lesson-select">Bài học</label>
-                <select id="lesson-select" disabled>
-                    <option value="">-- Chọn bài --</option>
-                </select>
+                <div class="filter-group">
+                    <label for="lesson-select">Bài học</label>
+                    <select id="lesson-select" disabled>
+                        <option value="">-- Chọn bài --</option>
+                    </select>
+                </div>
             </div>
+        </form>
+
+        <div class="reset-btn-wrapper">
+            <button class="reset-btn" onclick="clearDataAndReset()">🔄 Reset bộ nhớ (Nếu bị lỗi chọn bài)</button>
         </div>
 
         <div id="password-box" class="password-box">
@@ -778,6 +784,7 @@
             }
         }
 
+        // 強力解鎖與更新選項
         function updateLessonOptions() {
             const level = levelSelect.value;
             lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
@@ -789,8 +796,11 @@
                     opt.textContent = item;
                     lessonSelect.appendChild(opt);
                 });
+                // 強制暴力解鎖
+                lessonSelect.disabled = false;
                 lessonSelect.removeAttribute("disabled");
             } else {
+                lessonSelect.disabled = true;
                 lessonSelect.setAttribute("disabled", "true");
             }
             learningZone.style.display = "none";
@@ -977,12 +987,14 @@
             }
         }
 
-        levelSelect.addEventListener("change", () => {
+        // 監聽 Trình độ 切換
+        levelSelect.addEventListener("change", function() {
             updateLessonOptions();
             localStorage.setItem('savedLevel', levelSelect.value);
             localStorage.removeItem('savedLesson');
         });
         
+        // 監聽 Bài học 切換
         lessonSelect.addEventListener("change", checkLessonAccess);
 
         function openTab(evt, tabId) {
@@ -1013,7 +1025,17 @@
             evt.currentTarget.classList.add("active");
         }
 
-        // 優化加載初始化
+        function clearDataAndReset() {
+            localStorage.clear();
+            levelSelect.value = "";
+            lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
+            lessonSelect.disabled = true;
+            learningZone.style.display = "none";
+            passwordBox.style.display = "none";
+            alert("Đã xóa bộ nhớ tạm! Bạn có thể chọn lại Trình độ.");
+        }
+
+        // 初始化頁面
         function initPage() {
             const savedLevel = localStorage.getItem('savedLevel');
             const savedLesson = localStorage.getItem('savedLesson');
@@ -1031,11 +1053,8 @@
             }
         }
 
-        if (document.readyState === 'loading') {
-            window.addEventListener('DOMContentLoaded', initPage);
-        } else {
-            initPage();
-        }
+        // 雙重保障初始化
+        window.onload = initPage;
     </script>
 </body>
 </html>
