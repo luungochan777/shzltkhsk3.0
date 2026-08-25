@@ -479,34 +479,34 @@
         };
 
         const pronounsList = [
-            { word: "我", pinyin: "wǒ", img: "image/wo.png" }, 
-            { word: "你", pinyin: "nǐ", img: "image/ni.png" }, 
-            { word: "您", pinyin: "nín", img: "image/nin.png" },
-            { word: "他", pinyin: "tā", img: "image/ta1.png" }, 
-            { word: "她", pinyin: "tā", img: "image/ta2.png" }, 
-            { word: "我们", pinyin: "wǒmen", img: "image/women.png" },
-            { word: "你们", pinyin: "nǐmen", img: "image/nimen.png" }, 
-            { word: "他们", pinyin: "tāmen", img: "image/tamen1.png" }, 
-            { word: "她们", pinyin: "tāmen", img: "image/tamen2.png" }
+            { word: "我", pinyin: "wǒ" }, 
+            { word: "你", pinyin: "nǐ" }, 
+            { word: "您", pinyin: "nín" },
+            { word: "他", pinyin: "tā" }, 
+            { word: "她", pinyin: "tā" }, 
+            { word: "我们", pinyin: "wǒmen" },
+            { word: "你们", pinyin: "nǐmen" }, 
+            { word: "他们", pinyin: "tāmen" }, 
+            { word: "她们", pinyin: "tāmen" }
         ];
 
         const greetingsList = [
-            { word: "你好", pinyin: "nǐ hǎo", icon: "bi bi-hand-thumbs-up" }, 
-            { word: "您好", pinyin: "nín hǎo", icon: "fa-solid fa-hands-bowing" }, 
-            { word: "老师好", pinyin: "lǎoshī hǎo", icon: "fa-solid fa-chalkboard-user" },
-            { word: "你们好", pinyin: "nǐmen hǎo", icon: "bi bi-chat-square-heart" }, 
-            { word: "同学们好", pinyin: "tóngxuémen hǎo", icon: "fa-solid fa-graduation-cap" }, 
-            { word: "大家好", pinyin: "dàjiā hǎo", icon: "bi bi-megaphone" }
+            { word: "你好", pinyin: "nǐ hǎo" }, 
+            { word: "您好", pinyin: "nín hǎo" }, 
+            { word: "老师好", pinyin: "lǎoshī hǎo" },
+            { word: "你们好", pinyin: "nǐmen hǎo" }, 
+            { word: "同学们好", pinyin: "tóngxuémen hǎo" }, 
+            { word: "大家好", pinyin: "dàjiā hǎo" }
         ];
 
         const relationsList = [
-            { word: "同学", pinyin: "tóngxué", icon: "fa-solid fa-book-reader" }, 
-            { word: "同桌", pinyin: "tóngzhuō", icon: "bi bi-layout-split" }, 
-            { word: "同屋", pinyin: "tóngwū", icon: "bi bi-house-heart" },
-            { word: "同事", pinyin: "tóngshì", icon: "fa-solid fa-briefcase" }, 
-            { word: "朋友", pinyin: "péngyou", icon: "fa-solid fa-user-group" }, 
-            { word: "男朋友", pinyin: "nánpéngyou", icon: "bi bi-heart-pulse-fill" },
-            { word: "女朋友", pinyin: "nǚpéngyou", icon: "bi bi-heart-fill" }
+            { word: "同学", pinyin: "tóngxué" }, 
+            { word: "同桌", pinyin: "tóngzhuō" }, 
+            { word: "同屋", pinyin: "tóngwū" },
+            { word: "同事", pinyin: "tóngshì" }, 
+            { word: "朋友", pinyin: "péngyou" }, 
+            { word: "男朋友", pinyin: "nánpéngyou" },
+            { word: "女朋友", pinyin: "nǚpéngyou" }
         ];
 
         const countriesList = [
@@ -525,15 +525,33 @@
         ];
 
         const placesList = [
-            { word: "商店", pinyin: "shāngdiàn", img: "image/shangdian.png" },
-            { word: "书店", pinyin: "shūdiàn", img: "image/shudian.png" },
-            { word: "饭店", pinyin: "fàndiàn", img: "image/fandian.png" },
-            { word: "食堂", pinyin: "shítáng", img: "image/shitang.png" },
-            { word: "商场", pinyin: "shāngchǎng", img: "image/shangchang.png" },
-            { word: "飞机场", pinyin: "fēijīchǎng", img: "image/jichang.png" },
-            { word: "图书馆", pinyin: "túshūguǎn", img: "image/tushuguan.png" },
-            { word: "体育馆", pinyin: "tǐyùguǎn", img: "image/tiyuguan.png" }
+            { word: "商店", pinyin: "shāngdiàn" },
+            { word: "书店", pinyin: "shūdiàn" },
+            { word: "饭店", pinyin: "fàndiàn" },
+            { word: "食堂", pinyin: "shítáng" },
+            { word: "商场", pinyin: "shāngchǎng" },
+            { word: "飞机场", pinyin: "fēijīchǎng" },
+            { word: "图书馆", pinyin: "túshūguǎn" },
+            { word: "体育馆", pinyin: "tǐyùguǎn" }
         ];
+
+        // 转换带声调拼音为无声调拼音的文件名
+        function removeTones(pinyin) {
+            const toneMap = {
+                'ā': 'a', 'á': 'a', 'ǎ': 'a', 'à': 'a',
+                'ō': 'o', 'ó': 'o', 'ǒ': 'o', 'ò': 'o',
+                'ē': 'e', 'é': 'e', 'ě': 'e', 'è': 'e',
+                'ī': 'i', 'í': 'i', 'ǐ': 'i', 'ì': 'i',
+                'ū': 'u', 'ú': 'u', 'ǔ': 'u', 'ù': 'u',
+                'ǖ': 'v', 'ǘ': 'v', 'ǚ': 'v', 'ǜ': 'v', 'ü': 'v',
+                'Ń': 'N', 'Ň': 'N', 'ǹ': 'n', 'ń': 'n', 'ň': 'n'
+            };
+
+            return pinyin
+                .toLowerCase()
+                .replace(/[āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜüńňǹ]/g, char => toneMap[char] || char)
+                .replace(/[^a-z]/g, '');
+        }
 
         function toggleFlip(cardElement, wordText) {
             cardElement.classList.toggle("flipped");
@@ -575,10 +593,9 @@
                 let frontContent = "";
                 if (isCountry) {
                     frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
-                } else if (item.img) {
-                    frontContent = `<img src="${item.img}" style="max-width:85%; max-height:110px; width:auto; height:auto; object-fit:contain;" alt="${item.word}">`;
                 } else {
-                    frontContent = `<i class="${item.icon} topic-icon-display"></i>`;
+                    const cleanPinyin = removeTones(item.pinyin);
+                    frontContent = `<img src="image/${cleanPinyin}.png" style="max-width:85%; max-height:110px; width:auto; height:auto; object-fit:contain;" alt="${item.word}">`;
                 }
 
                 return `
