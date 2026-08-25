@@ -385,6 +385,16 @@
             { word: "沙特<br>阿拉伯", pinyin: "Shātè Ālābó", code: "sa" }
         ];
 
+        /* Danh sách địa điểm HSK2 Bài 5 */
+        const placesList = [
+            { word: "饭店", pinyin: "fàndiàn", icon: "fa-solid fa-utensils" },
+            { word: "食堂", pinyin: "shítáng", icon: "fa-solid fa-bowl-rice" },
+            { word: "商场", pinyin: "shāngchǎng", icon: "fa-solid fa-store" },
+            { word: "飞机场", pinyin: "fēijīchǎng", icon: "fa-solid fa-plane-departure" },
+            { word: "图书馆", pinyin: "túshūguǎn", icon: "fa-solid fa-book-bookmark" },
+            { word: "体育馆", pinyin: "tǐyùguǎn", icon: "fa-solid fa-volleyball" }
+        ];
+
         function toggleFlip(cardElement, wordText) {
             cardElement.classList.toggle("flipped");
             if (cardElement.classList.contains("flipped")) {
@@ -487,7 +497,6 @@
             const tab2Container = document.getElementById("tab2-container");
             const tab5Container = document.getElementById("tab5-container");
 
-            // 仅在选择 HSK1 且 Bài 1 时渲染具体4个分类卡片
             if (level === "hsk1" && lesson === "Bài 1") {
                 tab1Container.innerHTML = `
                     <div class="sub-categories">
@@ -572,8 +581,28 @@
                         </div>
                     </div>
                 `;
+            } else if (level === "hsk2" && lesson === "Bài 5") {
+                /* Nội dung cho HSK2 - Bài 5 */
+                tab1Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-places')">Nơi chốn</button>
+                    </div>
+                    <div id="cat-img-places" class="sub-content active">
+                        <div class="flashcard-grid">${generateImgCardsHTML(placesList)}</div>
+                    </div>
+                `;
+
+                tab2Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-places')">Nơi chốn</button>
+                    </div>
+                    <div id="cat-places" class="sub-content active">
+                        <div class="flashcard-grid">${generateCardsHTML(placesList)}</div>
+                    </div>
+                `;
+
+                tab5Container.innerHTML = `<div class="placeholder-text">Nội dung hội thoại cho Bài 5 (HSK2) đang được cập nhật...</div>`;
             } else {
-                // 选择其他课程时的占位内容
                 const notAvailableHTML = `<div class="placeholder-text">Nội dung cho ${lesson} (${level.toUpperCase()}) đang được cập nhật...</div>`;
                 tab1Container.innerHTML = notAvailableHTML;
                 tab2Container.innerHTML = notAvailableHTML;
