@@ -486,6 +486,10 @@
             const level = levelSelect.value;
             const lesson = lessonSelect.value;
 
+            // Lưu lựa chọn vào localStorage mỗi khi render lại nội dung
+            if (level) localStorage.setItem('savedLevel', level);
+            if (lesson) localStorage.setItem('savedLesson', lesson);
+
             if (!level || !lesson) {
                 learningZone.style.display = "none";
                 return;
@@ -582,7 +586,6 @@
                     </div>
                 `;
             } else if (level === "hsk2" && lesson === "Bài 5") {
-                /* Nội dung cho HSK2 - Bài 5 */
                 tab1Container.innerHTML = `
                     <div class="sub-categories">
                         <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-places')">Nơi chốn</button>
@@ -610,7 +613,12 @@
             }
         }
 
-        levelSelect.addEventListener("change", updateLessonOptions);
+        levelSelect.addEventListener("change", () => {
+            updateLessonOptions();
+            localStorage.setItem('savedLevel', levelSelect.value);
+            localStorage.removeItem('savedLesson'); // Reset bài học khi đổi trình độ
+        });
+        
         lessonSelect.addEventListener("change", renderLessonContent);
 
         function openTab(evt, tabId) {
@@ -631,6 +639,22 @@
             document.getElementById(catId).classList.add("active");
             evt.currentTarget.classList.add("active");
         }
+
+        // Khôi phục lựa chọn khi tải lại trang (Page Refresh)
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedLevel = localStorage.getItem('savedLevel');
+            const savedLesson = localStorage.getItem('savedLesson');
+
+            if (savedLevel && lessonData[savedLevel]) {
+                levelSelect.value = savedLevel;
+                updateLessonOptions();
+                
+                if (savedLesson) {
+                    lessonSelect.value = savedLesson;
+                    renderLessonContent();
+                }
+            }
+        });
     </script>
 </body>
 </html>
