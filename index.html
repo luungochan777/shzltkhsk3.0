@@ -440,13 +440,12 @@
     </header>
 
     <div class="container">
-        <!-- autocomplete="off" 避免瀏覽器記住已禁用的選項 -->
         <form autocomplete="off" onsubmit="return false;">
             <div class="filter-bar">
                 <div class="filter-group">
                     <label for="level-select">Trình độ</label>
                     <select id="level-select">
-                        <option value="">-- Chọn trình độ --</option>
+                        <option value="" selected>-- Chọn trình độ --</option>
                         <option value="hsk1">HSK1</option>
                         <option value="hsk2">HSK2</option>
                         <option value="hsk31">HSK3.1</option>
@@ -784,7 +783,6 @@
             }
         }
 
-        // 強力解鎖與更新選項
         function updateLessonOptions() {
             const level = levelSelect.value;
             lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
@@ -796,7 +794,6 @@
                     opt.textContent = item;
                     lessonSelect.appendChild(opt);
                 });
-                // 強制暴力解鎖
                 lessonSelect.disabled = false;
                 lessonSelect.removeAttribute("disabled");
             } else {
@@ -987,14 +984,12 @@
             }
         }
 
-        // 監聽 Trình độ 切換
         levelSelect.addEventListener("change", function() {
             updateLessonOptions();
             localStorage.setItem('savedLevel', levelSelect.value);
             localStorage.removeItem('savedLesson');
         });
         
-        // 監聽 Bài học 切換
         lessonSelect.addEventListener("change", checkLessonAccess);
 
         function openTab(evt, tabId) {
@@ -1025,6 +1020,7 @@
             evt.currentTarget.classList.add("active");
         }
 
+        // 清除記憶並重置選單狀態
         function clearDataAndReset() {
             localStorage.clear();
             levelSelect.value = "";
@@ -1035,7 +1031,6 @@
             alert("Đã xóa bộ nhớ tạm! Bạn có thể chọn lại Trình độ.");
         }
 
-        // 初始化頁面
         function initPage() {
             const savedLevel = localStorage.getItem('savedLevel');
             const savedLesson = localStorage.getItem('savedLesson');
@@ -1049,11 +1044,11 @@
                     checkLessonAccess();
                 }
             } else {
+                levelSelect.value = "";
                 updateLessonOptions();
             }
         }
 
-        // 雙重保障初始化
         window.onload = initPage;
     </script>
 </body>
