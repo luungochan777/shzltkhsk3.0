@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SHZ Lý Thường Kiệt - Tài liệu lớp HSK3.0</title>
-    <!-- Nhúng bộ thư viện icon cờ quốc gia -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
-    <!-- Nhúng thư viện Font Awesome và Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -47,7 +45,6 @@
             box-sizing: border-box;
         }
 
-        /* BỘ LỌC NGANG */
         .filter-bar {
             display: flex;
             flex-direction: column;
@@ -71,7 +68,6 @@
             cursor: pointer;
         }
 
-        /* KHU VỰC NHẬP MẬT KHẨU */
         .password-box {
             display: none;
             background: white;
@@ -137,7 +133,6 @@
             display: none;
         }
 
-        /* THANH TABS CHÍNH */
         .tabs {
             display: flex;
             background-color: #eaeaea;
@@ -171,7 +166,6 @@
         .tab-content { padding: 1.2rem 0.8rem; display: none; }
         .tab-content.active { display: block; }
 
-        /* THANH TABS CON (SUB-TABS CHO TỪ VỰNG) */
         .vocab-sub-tabs {
             display: flex;
             gap: 0.8rem;
@@ -201,7 +195,6 @@
         .vocab-sub-content { display: none; }
         .vocab-sub-content.active { display: block; }
 
-        /* TIỂU MỤC CHỦ ĐỀ CON */
         .sub-categories {
             display: flex;
             gap: 0.6rem;
@@ -233,7 +226,6 @@
         .sub-content { display: none; }
         .sub-content.active { display: block; }
 
-        /* ====== 手機端 Carousel 翻頁樣式 ====== */
         .flashcard-carousel-wrapper {
             display: flex;
             flex-direction: column;
@@ -259,7 +251,6 @@
             display: block;
         }
 
-        /* 頁碼控制器 */
         .carousel-controls {
             display: flex;
             align-items: center;
@@ -301,7 +292,6 @@
             border: 1px solid #ffcdd2;
         }
 
-        /* ====== 卡片內部通用樣式 ====== */
         .flip-card {
             background-color: transparent;
             perspective: 1000px;
@@ -343,7 +333,6 @@
             transform: rotateY(180deg);
         }
 
-        /* 圖片大小控制器 */
         .card-image-display {
             max-width: 90%;
             max-height: 220px;
@@ -410,7 +399,6 @@
             font-size: 1.1rem;
         }
 
-        /* ====== 電腦端恢復多欄網格 ====== */
         @media (min-width: 768px) {
             header { padding: 2rem 1rem; }
             header h1 { font-size: 2.2rem; }
@@ -453,7 +441,6 @@
     </header>
 
     <div class="container">
-        <!-- Bộ lọc Trình độ và Bài học -->
         <div class="filter-bar">
             <div class="filter-group">
                 <label for="level-select">Trình độ</label>
@@ -461,6 +448,8 @@
                     <option value="">-- Chọn trình độ --</option>
                     <option value="hsk1">HSK1</option>
                     <option value="hsk2">HSK2</option>
+                    <option value="hsk31">HSK3.1</option>
+                    <option value="hsk32">HSK3.2</option>
                 </select>
             </div>
 
@@ -472,7 +461,6 @@
             </div>
         </div>
 
-        <!-- Khung Nhập Mật Khẩu -->
         <div id="password-box" class="password-box">
             <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 0.8rem;"></i>
             <h3>Bài học bị khóa</h3>
@@ -489,40 +477,32 @@
             <div id="pass-error" class="password-error">Mật khẩu không chính xác, vui lòng thử lại!</div>
         </div>
 
-        <!-- Khu vực nội dung học -->
         <div id="learning-zone" class="tabs-container">
-            <!-- TABS CHÍNH -->
             <div class="tabs">
                 <button class="tab-btn active" onclick="openTab(event, 'tab-vocab')">Từ vựng</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-sentences')">Mẫu câu</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-hanzi')">Chữ Hán</button>
             </div>
 
-            <!-- TAB 1: TỪ VỰNG -->
             <div id="tab-vocab" class="tab-content active">
-                <!-- TABS CON DÀNH CHO TỪ VỰNG -->
                 <div class="vocab-sub-tabs">
                     <button class="vocab-sub-btn active" onclick="openVocabSubTab(event, 'vocab-img')">Flashcard hình ảnh - chữ Hán</button>
                     <button class="vocab-sub-btn" onclick="openVocabSubTab(event, 'vocab-text')">Flashcard chữ Hán - pinyin</button>
                 </div>
 
-                <!-- SUB TAB 1.1: FLASHCARD HÌNH ẢNH - CHỮ HÁN -->
                 <div id="vocab-img" class="vocab-sub-content active">
                     <div id="tab1-container"></div>
                 </div>
 
-                <!-- SUB TAB 1.2: FLASHCARD CHỮ HÁN - PINYIN -->
                 <div id="vocab-text" class="vocab-sub-content">
                     <div id="tab2-container"></div>
                 </div>
             </div>
 
-            <!-- TAB 2: MẪU CÂU (HỘI THOẠI) -->
             <div id="tab-sentences" class="tab-content">
                 <div id="sentences-container"></div>
             </div>
 
-            <!-- TAB 3: CHỮ HÁN -->
             <div id="tab-hanzi" class="tab-content">
                 <div class="placeholder-text">Nội dung chữ Hán đang được cập nhật...</div>
             </div>
@@ -798,7 +778,6 @@
             }
         }
 
-        // 動態更新 Bài học 下拉選單內容
         function updateLessonOptions() {
             const level = levelSelect.value;
             lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
@@ -1034,21 +1013,29 @@
             evt.currentTarget.classList.add("active");
         }
 
-        // 修復自動讀取緩存時未激活下拉選單的問題
-        window.addEventListener("DOMContentLoaded", () => {
+        // 優化加載初始化
+        function initPage() {
             const savedLevel = localStorage.getItem('savedLevel');
             const savedLesson = localStorage.getItem('savedLesson');
 
             if (savedLevel && lessonData[savedLevel]) {
                 levelSelect.value = savedLevel;
-                updateLessonOptions(); // 確保重新解鎖並填入 Bài học 選項列表
+                updateLessonOptions();
                 
-                if (savedLesson) {
+                if (savedLesson && lessonData[savedLevel].includes(savedLesson)) {
                     lessonSelect.value = savedLesson;
                     checkLessonAccess();
                 }
+            } else {
+                updateLessonOptions();
             }
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', initPage);
+        } else {
+            initPage();
+        }
     </script>
 </body>
 </html>
