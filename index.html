@@ -479,15 +479,15 @@
         };
 
         const pronounsList = [
-            { word: "我", pinyin: "wǒ" }, 
-            { word: "你", pinyin: "nǐ" }, 
-            { word: "您", pinyin: "nín" },
-            { word: "他", pinyin: "tā" }, 
-            { word: "她", pinyin: "tā" }, 
-            { word: "我们", pinyin: "wǒmen", img:"image/women.png" },
-            { word: "你们", pinyin: "nǐmen" }, 
-            { word: "他们", pinyin: "tāmen" }, 
-            { word: "她们", pinyin: "tāmen" }
+            { word: "我", pinyin: "wǒ", img: "wo.png" }, 
+            { word: "你", pinyin: "nǐ", img: "ni.png" }, 
+            { word: "您", pinyin: "nín", img: "nin.png" },
+            { word: "他", pinyin: "tā", img: "ta1.jpg" }, 
+            { word: "她", pinyin: "tā", img: "ta2.jpg" }, 
+            { word: "我们", pinyin: "wǒmen", img: "women.png" },
+            { word: "你们", pinyin: "nǐmen", img: "nimen.png" }, 
+            { word: "他们", pinyin: "tāmen", img: "tamen1.jpg" }, 
+            { word: "她们", pinyin: "tāmen", img: "tamen2.jpg" }
         ];
 
         const greetingsList = [
@@ -594,8 +594,13 @@
                 if (isCountry) {
                     frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
                 } else {
-                    const cleanPinyin = removeTones(item.pinyin);
-                    frontContent = `<img src="image/${cleanPinyin}.png" style="max-width:85%; max-height:110px; width:auto; height:auto; object-fit:contain;" alt="${item.word}">`;
+                    // 优先使用自定义的 item.img，否则使用去声调拼音拼接 .png
+                    const imgSrc = item.img ? `image/${item.img}` : `image/${removeTones(item.pinyin)}.png`;
+                    
+                    frontContent = `<img src="${imgSrc}" 
+                        style="max-width:85%; max-height:110px; width:auto; height:auto; object-fit:contain;" 
+                        alt="${item.word}"
+                        onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'chinese-word\\'>${item.word}</div>';">`;
                 }
 
                 return `
