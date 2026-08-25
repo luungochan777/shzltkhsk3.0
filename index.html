@@ -71,6 +71,67 @@
             cursor: pointer;
         }
 
+        /* KHU VỰC NHẬP MẬT KHẨU */
+        .password-box {
+            display: none;
+            background: white;
+            padding: 2rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 450px;
+            margin: 2rem auto;
+        }
+        .password-box h3 { margin-top: 0; color: var(--primary-color); }
+        .password-box p { color: #666; font-size: 0.95rem; margin-bottom: 1.2rem; }
+        
+        .password-input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .password-input-wrapper input {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .toggle-password-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+            font-size: 1.1rem;
+            padding: 4px;
+        }
+        .toggle-password-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .password-input-group { 
+            display: flex; 
+            gap: 0.5rem; 
+            justify-content: center;
+            align-items: center; 
+        }
+        .password-input-group button.submit-btn {
+            padding: 0.75rem 1.2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .password-error { color: #d32f2f; margin-top: 0.8rem; font-size: 0.9rem; display: none; }
+
         .tabs-container {
             background: white;
             border-radius: var(--border-radius);
@@ -79,7 +140,7 @@
             display: none;
         }
 
-        /* THANH TABS */
+        /* THANH TABS CHÍNH */
         .tabs {
             display: flex;
             background-color: #eaeaea;
@@ -94,8 +155,8 @@
         .tab-btn {
             background: none;
             border: none;
-            padding: 1rem 1.2rem;
-            font-size: 0.95rem;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             color: #555;
@@ -113,7 +174,37 @@
         .tab-content { padding: 1.2rem 0.8rem; display: none; }
         .tab-content.active { display: block; }
 
-        /* TIỂU MỤC CON */
+        /* THANH TABS CON (SUB-TABS CHO TỪ VỰNG) */
+        .vocab-sub-tabs {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.8rem;
+        }
+
+        .vocab-sub-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #555;
+            transition: all 0.2s;
+        }
+
+        .vocab-sub-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .vocab-sub-content { display: none; }
+        .vocab-sub-content.active { display: block; }
+
+        /* TIỂU MỤC CHỦ ĐỀ CON */
         .sub-categories {
             display: flex;
             gap: 0.6rem;
@@ -125,27 +216,27 @@
         .sub-categories::-webkit-scrollbar { display: none; }
 
         .sub-cat-btn {
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 0.4rem 0.9rem;
+            border-radius: 16px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             white-space: nowrap;
             flex-shrink: 0;
         }
 
         .sub-cat-btn.active {
-            background-color: var(--primary-color);
+            background-color: #555;
             color: white;
-            border-color: var(--primary-color);
+            border-color: #555;
         }
 
         .sub-content { display: none; }
         .sub-content.active { display: block; }
 
-        /* LƯỚI THẺ */
+        /* LƯỚI THẺ FLASHCARD */
         .flashcard-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -267,7 +358,7 @@
             .topic-icon-display { font-size: 4.8rem; }
             .flag-icon-display { font-size: 5.5rem; }
             .tab-btn { font-size: 1.05rem; padding: 1rem 1.8rem; }
-            .sub-cat-btn { font-size: 0.95rem; padding: 0.6rem 1.4rem; }
+            .sub-cat-btn { font-size: 0.95rem; padding: 0.5rem 1.2rem; }
             .chat-text-zh { font-size: 1.8rem; }
         }
     </style>
@@ -280,7 +371,7 @@
     </header>
 
     <div class="container">
-        <!-- 下拉选择框 -->
+        <!-- Bộ lọc Trình độ và Bài học -->
         <div class="filter-bar">
             <div class="filter-group">
                 <label for="level-select">Trình độ</label>
@@ -301,42 +392,90 @@
             </div>
         </div>
 
-        <!-- 学习内容区域 -->
+        <!-- Khung Nhập Mật Khẩu -->
+        <div id="password-box" class="password-box">
+            <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 0.8rem;"></i>
+            <h3>Bài học bị khóa</h3>
+            <p>Vui lòng nhập mật khẩu bài học:</p>
+            <div class="password-input-group">
+                <div class="password-input-wrapper">
+                    <input type="password" id="pass-input" placeholder="Nhập mật khẩu...">
+                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()" title="Hiển thị/Ẩn mật khẩu">
+                        <i id="toggle-icon" class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <button class="submit-btn" onclick="checkPassword()">Xác nhận</button>
+            </div>
+            <div id="pass-error" class="password-error">Mật khẩu không chính xác, vui lòng thử lại!</div>
+        </div>
+
+        <!-- Khu vực nội dung học -->
         <div id="learning-zone" class="tabs-container">
+            <!-- TABS CHÍNH -->
             <div class="tabs">
-                <button class="tab-btn active" onclick="openTab(event, 'tab-img-hanzi')">Lật thẻ Hình ảnh - Từ vựng</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-hanzi-pinyin')">Thẻ từ vựng Chữ Hán - Pinyin</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-dictation')">Chữ Hán viết tay</button>
+                <button class="tab-btn active" onclick="openTab(event, 'tab-vocab')">Từ vựng</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-sentences')">Mẫu câu</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-dialogue')">Hội thoại</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-hanzi')">Chữ Hán</button>
             </div>
 
-            <!-- TAB 1: THẺ HÌNH ẢNH -->
-            <div id="tab-img-hanzi" class="tab-content active">
-                <div id="tab1-container"></div>
+            <!-- TAB 1: TỪ VỰNG -->
+            <div id="tab-vocab" class="tab-content active">
+                <!-- TABS CON DÀNH CHO TỪ VỰNG -->
+                <div class="vocab-sub-tabs">
+                    <button class="vocab-sub-btn active" onclick="openVocabSubTab(event, 'vocab-img')">Flashcard hình ảnh - chữ Hán</button>
+                    <button class="vocab-sub-btn" onclick="openVocabSubTab(event, 'vocab-text')">Flashcard chữ Hán - pinyin</button>
+                </div>
+
+                <!-- SUB TAB 1.1: FLASHCARD HÌNH ẢNH - CHỮ HÁN -->
+                <div id="vocab-img" class="vocab-sub-content active">
+                    <div id="tab1-container"></div>
+                </div>
+
+                <!-- SUB TAB 1.2: FLASHCARD CHỮ HÁN - PINYIN -->
+                <div id="vocab-text" class="vocab-sub-content">
+                    <div id="tab2-container"></div>
+                </div>
             </div>
 
-            <!-- TAB 2: THẺ CHỮ HÁN - PINYIN -->
-            <div id="tab-hanzi-pinyin" class="tab-content">
-                <div id="tab2-container"></div>
+            <!-- TAB 2: MẪU CÂU (HỘI THOẠI) -->
+            <div id="tab-sentences" class="tab-content">
+                <div id="sentences-container"></div>
             </div>
 
-            <div id="tab-dictation" class="tab-content"><div class="placeholder-text">Nội dung đang được cập nhật...</div></div>
-            <div id="tab-sentences" class="tab-content"><div class="placeholder-text">Nội dung đang được cập nhật...</div></div>
-            
-            <!-- TAB 5: HỘI THOẠI -->
-            <div id="tab-dialogue" class="tab-content">
-                <div id="tab5-container"></div>
+            <!-- TAB 3: CHỮ HÁN -->
+            <div id="tab-hanzi" class="tab-content">
+                <div class="placeholder-text">Nội dung chữ Hán đang được cập nhật...</div>
             </div>
         </div>
     </div>
 
     <script>
+        // Cấu hình danh sách bài học
         const lessonData = {
-            hsk1: ["Ngữ âm", "Bài 1", "Bài 2", "Bài 3", "Bài 4"],
-            hsk2: ["Bài 5", "Bài 6", "Bài 7", "Bài 8"],
-            hsk31: ["Bài 1"],
-            hsk32: ["Bài 1"]
+            hsk1: [
+                "Ngữ âm",
+                "Bài 1 - 他叫什么名字",
+                "Bài 2 - 我和我的家人",
+                "Bài 3 - 你每天几点睡觉",
+                "Bài 4 - 一共多少钱"
+            ],
+            hsk2: [
+                "Bài 5 - 你去那儿干什么",
+                "Bài 6 - 手机在桌子上"
+            ],
+            hsk31: ["Bài 1 - 他叫什么名字"],
+            hsk32: ["Bài 1 - 他叫什么名字"]
+        };
+
+        // Danh sách mật khẩu tương ứng (Chữ cái đầu tiên của Pinyin từng từ)
+        const lessonPasswords = {
+            "Ngữ âm": "nguam",
+            "Bài 1 - 他叫什么名字": "tjsmmz",      // tā jiào shén me míng zi
+            "Bài 2 - 我和我的家人": "whwdjr",      // wǒ hé wǒ de jiā rén
+            "Bài 3 - 你每天几点睡觉": "nmtjdsj",    // nǐ měi tiān jǐ diǎn shuì jiào
+            "Bài 4 - 一共多少钱": "ygdsq",        // yī gòng duō shao qián
+            "Bài 5 - 你去那儿干什么": "nqngsm",     // nǐ qù nà er gàn shén me
+            "Bài 6 - 手机在桌子上": "sjzzzs"       // shǒu jī zài zhuō zi shang
         };
 
         const pronounsList = [
@@ -385,7 +524,6 @@
             { word: "沙特<br>阿拉伯", pinyin: "Shātè Ālābó", code: "sa" }
         ];
 
-        /* Danh sách địa điểm HSK2 Bài 5 */
         const placesList = [
             { word: "饭店", pinyin: "fàndiàn", icon: "fa-solid fa-utensils" },
             { word: "食堂", pinyin: "shítáng", icon: "fa-solid fa-bowl-rice" },
@@ -463,6 +601,23 @@
         const levelSelect = document.getElementById("level-select");
         const lessonSelect = document.getElementById("lesson-select");
         const learningZone = document.getElementById("learning-zone");
+        const passwordBox = document.getElementById("password-box");
+        const passInput = document.getElementById("pass-input");
+        const passError = document.getElementById("pass-error");
+        const toggleIcon = document.getElementById("toggle-icon");
+
+        // Hàm chuyển đổi ẩn/hiện mật khẩu
+        function togglePasswordVisibility() {
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passInput.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            }
+        }
 
         function updateLessonOptions() {
             const level = levelSelect.value;
@@ -480,28 +635,67 @@
                 lessonSelect.setAttribute("disabled", "true");
             }
             learningZone.style.display = "none";
+            passwordBox.style.display = "none";
         }
 
-        function renderLessonContent() {
+        function checkLessonAccess() {
             const level = levelSelect.value;
             const lesson = lessonSelect.value;
 
-            // Lưu lựa chọn vào localStorage mỗi khi render lại nội dung
             if (level) localStorage.setItem('savedLevel', level);
             if (lesson) localStorage.setItem('savedLesson', lesson);
 
             if (!level || !lesson) {
                 learningZone.style.display = "none";
+                passwordBox.style.display = "none";
                 return;
             }
 
+            const unlockedLessons = JSON.parse(localStorage.getItem('unlockedLessons') || '{}');
+
+            if (unlockedLessons[lesson] === true) {
+                passwordBox.style.display = "none";
+                renderLessonContent();
+            } else {
+                learningZone.style.display = "none";
+                passwordBox.style.display = "block";
+                passInput.value = "";
+                passInput.type = "password";
+                toggleIcon.className = "fa-solid fa-eye";
+                passError.style.display = "none";
+            }
+        }
+
+        function checkPassword() {
+            const lesson = lessonSelect.value;
+            const enteredPass = passInput.value.trim().toLowerCase();
+            const correctPass = lessonPasswords[lesson];
+
+            if (enteredPass === correctPass) {
+                const unlockedLessons = JSON.parse(localStorage.getItem('unlockedLessons') || '{}');
+                unlockedLessons[lesson] = true;
+                localStorage.setItem('unlockedLessons', JSON.stringify(unlockedLessons));
+
+                passwordBox.style.display = "none";
+                renderLessonContent();
+            } else {
+                passError.style.display = "block";
+            }
+        }
+
+        passInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") checkPassword();
+        });
+
+        function renderLessonContent() {
+            const lesson = lessonSelect.value;
             learningZone.style.display = "block";
 
             const tab1Container = document.getElementById("tab1-container");
             const tab2Container = document.getElementById("tab2-container");
-            const tab5Container = document.getElementById("tab5-container");
+            const sentencesContainer = document.getElementById("sentences-container");
 
-            if (level === "hsk1" && lesson === "Bài 1") {
+            if (lesson.includes("Bài 1")) {
                 tab1Container.innerHTML = `
                     <div class="sub-categories">
                         <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-pronouns')">Đại từ nhân xưng</button>
@@ -528,7 +722,7 @@
                     <div id="cat-countries" class="sub-content"><div class="flashcard-grid">${generateCardsHTML(countriesList)}</div></div>
                 `;
 
-                tab5Container.innerHTML = `
+                sentencesContainer.innerHTML = `
                     <div class="dialogue-container">
                         <div class="dialogue-section">
                             <h4>Mẫu 1: Hỏi tên (Thông thường)</h4>
@@ -585,7 +779,7 @@
                         </div>
                     </div>
                 `;
-            } else if (level === "hsk2" && lesson === "Bài 5") {
+            } else if (lesson.includes("Bài 5")) {
                 tab1Container.innerHTML = `
                     <div class="sub-categories">
                         <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-places')">Nơi chốn</button>
@@ -604,22 +798,22 @@
                     </div>
                 `;
 
-                tab5Container.innerHTML = `<div class="placeholder-text">Nội dung hội thoại cho Bài 5 (HSK2) đang được cập nhật...</div>`;
+                sentencesContainer.innerHTML = `<div class="placeholder-text">Nội dung mẫu câu cho ${lesson} đang được cập nhật...</div>`;
             } else {
-                const notAvailableHTML = `<div class="placeholder-text">Nội dung cho ${lesson} (${level.toUpperCase()}) đang được cập nhật...</div>`;
+                const notAvailableHTML = `<div class="placeholder-text">Nội dung từ vựng cho ${lesson} đang được cập nhật...</div>`;
                 tab1Container.innerHTML = notAvailableHTML;
                 tab2Container.innerHTML = notAvailableHTML;
-                tab5Container.innerHTML = notAvailableHTML;
+                sentencesContainer.innerHTML = `<div class="placeholder-text">Nội dung mẫu câu cho ${lesson} đang được cập nhật...</div>`;
             }
         }
 
         levelSelect.addEventListener("change", () => {
             updateLessonOptions();
             localStorage.setItem('savedLevel', levelSelect.value);
-            localStorage.removeItem('savedLesson'); // Reset bài học khi đổi trình độ
+            localStorage.removeItem('savedLesson');
         });
         
-        lessonSelect.addEventListener("change", renderLessonContent);
+        lessonSelect.addEventListener("change", checkLessonAccess);
 
         function openTab(evt, tabId) {
             const tabContents = document.getElementsByClassName("tab-content");
@@ -627,6 +821,15 @@
             const tabBtns = document.getElementsByClassName("tab-btn");
             for (let i = 0; i < tabBtns.length; i++) tabBtns[i].classList.remove("active");
             document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function openVocabSubTab(evt, subTabId) {
+            const subContents = document.getElementsByClassName("vocab-sub-content");
+            for (let i = 0; i < subContents.length; i++) subContents[i].classList.remove("active");
+            const subBtns = document.getElementsByClassName("vocab-sub-btn");
+            for (let i = 0; i < subBtns.length; i++) subBtns[i].classList.remove("active");
+            document.getElementById(subTabId).classList.add("active");
             evt.currentTarget.classList.add("active");
         }
 
@@ -640,7 +843,6 @@
             evt.currentTarget.classList.add("active");
         }
 
-        // Khôi phục lựa chọn khi tải lại trang (Page Refresh)
         window.addEventListener("DOMContentLoaded", () => {
             const savedLevel = localStorage.getItem('savedLevel');
             const savedLesson = localStorage.getItem('savedLesson');
@@ -651,7 +853,7 @@
                 
                 if (savedLesson) {
                     lessonSelect.value = savedLesson;
-                    renderLessonContent();
+                    checkLessonAccess();
                 }
             }
         });
