@@ -233,7 +233,7 @@
         .sub-content { display: none; }
         .sub-content.active { display: block; }
 
-        /* ====== 手機端翻頁 Carousel 樣式 ====== */
+        /* ====== 手機端 Carousel 翻頁樣式 ====== */
         .flashcard-carousel-wrapper {
             display: flex;
             flex-direction: column;
@@ -245,21 +245,21 @@
 
         .flashcard-carousel {
             width: 100%;
-            height: 320px; /* 大尺寸卡片，便於手機查看 */
+            height: 320px;
             position: relative;
         }
 
         .flashcard-carousel .flip-card {
-            display: none; /* 預設隱藏所有卡片 */
+            display: none;
             width: 100%;
             height: 100%;
         }
 
         .flashcard-carousel .flip-card.active-slide {
-            display: block; /* 僅顯示當前頁卡片 */
+            display: block;
         }
 
-        /* 頁碼控制器與按鈕 */
+        /* 頁碼控制器 */
         .carousel-controls {
             display: flex;
             align-items: center;
@@ -343,6 +343,15 @@
             transform: rotateY(180deg);
         }
 
+        /* 圖片大小控制器 */
+        .card-image-display {
+            max-width: 90%;
+            max-height: 220px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
         .chinese-word {
             font-family: var(--font-simsun);
             font-size: 3.2rem;
@@ -401,7 +410,7 @@
             font-size: 1.1rem;
         }
 
-        /* ====== 電腦端（寬屏）恢復網格排列 ====== */
+        /* ====== 電腦端恢復多欄網格 ====== */
         @media (min-width: 768px) {
             header { padding: 2rem 1rem; }
             header h1 { font-size: 2.2rem; }
@@ -424,7 +433,7 @@
             }
 
             .carousel-controls {
-                display: none !important; /* 電腦端隱藏頁碼控制按鈕 */
+                display: none !important;
             }
 
             .chinese-word { font-size: 3rem; }
@@ -523,7 +532,6 @@
     </div>
 
     <script>
-        // Cấu hình danh sách bài học
         const lessonData = {
             hsk1: [
                 "Ngữ âm",
@@ -624,7 +632,6 @@
             }
         }
 
-        // 渲染純文字 Flashcard + 包裹翻頁組件
         function renderCardsContainer(dataList, containerId) {
             const cardsHTML = dataList.map((item, index) => `
                 <div class="flip-card ${index === 0 ? 'active-slide' : ''}" onclick="toggleFlip(this, '${item.word}')">
@@ -645,7 +652,7 @@
             return buildCarouselWrapper(cardsHTML, dataList.length, containerId);
         }
 
-        // 渲染圖片 Flashcard + 包裹翻頁組件
+        // 修正後的圖片渲染邏輯
         function renderImgCardsContainer(dataList, containerId, isCountry = false) {
             const cardsHTML = dataList.map((item, index) => {
                 let frontContent = "";
@@ -653,13 +660,10 @@
                     frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
                 } else {
                     const cleanWord = item.word.replace(/<br>/g, '');
-                    const fileName = item.img ? item.img : `${cleanWord}.png`;
-                    const imgSrc = `image/${fileName}`;
+                    const fileName = item.img ? item.img : (cleanWord + '.png');
+                    const imgSrc = 'image/' + fileName;
                     
-                    frontContent = `<img src="${imgSrc}" 
-                        style="max-width:92%; max-height:200px; width:auto; height:auto; object-fit:contain;" 
-                        alt="${item.word}"
-                        onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'chinese-word\\'>${item.word}</div>';">`;
+                    frontContent = '<img src="' + imgSrc + '" class="card-image-display" alt="' + item.word + '" onerror="this.onerror=null; this.parentElement.innerHTML=\'<div class=\\\\'chinese-word\\\\'>' + item.word + '</div>\';">';
                 }
 
                 return `
@@ -683,7 +687,6 @@
             return buildCarouselWrapper(cardsHTML, dataList.length, containerId);
         }
 
-        // 組裝包含頁碼與控制按鈕的包裹 HTML
         function buildCarouselWrapper(cardsHTML, totalCount, containerId) {
             return `
                 <div class="flashcard-carousel-wrapper" id="wrapper-${containerId}">
@@ -703,7 +706,6 @@
             `;
         }
 
-        // ====== 翻頁邏輯與頁碼更新 ======
         const activeCardIndices = {};
 
         function updateCarousel(containerId) {
@@ -716,13 +718,12 @@
 
             cards.forEach((card, idx) => {
                 card.classList.remove('active-slide');
-                card.classList.remove('flipped'); // 切換卡片時自動重置翻牌狀態
+                card.classList.remove('flipped');
                 if (idx === currentIndex) {
                     card.classList.add('active-slide');
                 }
             });
 
-            // 更新頁碼與按鈕
             const pageIndicator = document.getElementById(`page-indicator-${containerId}`);
             const prevBtn = document.getElementById(`prev-btn-${containerId}`);
             const nextBtn = document.getElementById(`next-btn-${containerId}`);
@@ -752,7 +753,6 @@
             }
         }
 
-        // ====== 手機端左右觸控滑動切換 ======
         function initSwipeSupport(containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -771,7 +771,7 @@
 
             function handleSwipe() {
                 const diffX = touchEndX - touchStartX;
-                if (Math.abs(diffX) > 40) { // 滑動距離大於 40px
+                if (Math.abs(diffX) > 40) {
                     if (diffX < 0) {
                         nextCard(containerId);
                     } else {
@@ -904,7 +904,6 @@
                     <div id="cat-countries" class="sub-content">${renderCardsContainer(countriesList, 'txt-countries')}</div>
                 `;
 
-                // 初始化滑動手勢
                 ['img-pronouns', 'img-greetings', 'img-relations', 'img-countries', 
                  'txt-pronouns', 'txt-greetings', 'txt-relations', 'txt-countries'].forEach(id => {
                     activeCardIndices[id] = 0;
