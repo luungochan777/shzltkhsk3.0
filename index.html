@@ -1,49 +1,978 @@
-function generateImgCardsHTML(dataList, containerId, isCountry = false) {
-    if (!dataList || dataList.length === 0) return '';
-
-    const cards = dataList.map((item, index) => {
-        let frontContent = "";
-        if (isCountry) {
-            frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
-        } else {
-            // 1. 去除中文詞彙中的換行標籤 <br>
-            const cleanWord = item.word.replace(/<br>/g, '');
-            // 2. 優先使用手動指定的 img，否則預設使用 [中文詞彙].png (例如: "我" -> "我.png")
-            const rawFileName = item.img ? item.img : `${cleanWord}.png`;
-            // 3. 進行安全的 URL 編碼，確保 GitHub Pages 讀取中文檔名不破圖
-            const imgSrc = `image/${encodeURIComponent(rawFileName)}`;
-            
-            frontContent = `<img src="${imgSrc}" 
-                style="max-width:95%; max-height:180px; width:auto; height:auto; object-fit:contain;" 
-                alt="${cleanWord}"
-                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'chinese-word\\'>${cleanWord}</div>';">`;
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHZ Lý Thường Kiệt - Tài liệu lớp HSK3.0</title>
+    <!-- Nhúng bộ thư viện icon cờ quốc gia -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
+    <!-- Nhúng thư viện Font Awesome và Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #d32f2f;
+            --secondary-color: #f5f5f5;
+            --text-color: #333;
+            --border-radius: 12px;
+            --font-simsun: "SimSun", "Songti SC", "NSimSun", "STSong", serif;
         }
 
-        return `
-            <div class="flip-card carousel-item-${containerId}" style="display: ${index === 0 ? 'block' : 'none'};" onclick="toggleFlip(this, '${item.word}')">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        ${frontContent}
-                    </div>
-                    <div class="flip-card-back">
-                        <div class="chinese-word" style="font-size: 2.2rem; margin-bottom:0.8rem;">${item.word}</div>
-                        <div class="pinyin-word" style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:normal; color:#666;">(${item.pinyin.replace(/<br>/g, ' ')})</div>
-                        <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word.replace(/<br>/g, '')}')" title="Nghe phát âm">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#d32f2f"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                        </button>
-                    </div>
+        html, body { touch-action: manipulation; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: var(--text-color);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
+        header p { margin: 0.3rem 0 0 0; font-size: 1rem; opacity: 0.9; }
+
+        .container {
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+
+        /* BỘ LỌC NGANG */
+        .filter-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: white;
+            padding: 1.2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group { display: flex; flex-direction: column; flex: 1; }
+        .filter-group label { font-weight: bold; margin-bottom: 0.4rem; color: #555; font-size: 0.95rem; }
+        .filter-group select {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        /* KHU VỰC NHẬP MẬT KHẨU */
+        .password-box {
+            display: none;
+            background: white;
+            padding: 2rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 450px;
+            margin: 2rem auto;
+        }
+        .password-box h3 { margin-top: 0; color: var(--primary-color); }
+        .password-box p { color: #666; font-size: 0.95rem; margin-bottom: 1.2rem; }
+        
+        .password-input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .password-input-wrapper input {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .toggle-password-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+            font-size: 1.1rem;
+            padding: 4px;
+        }
+        .toggle-password-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .password-input-group { 
+            display: flex; 
+            gap: 0.5rem; 
+            justify-content: center;
+            align-items: center; 
+        }
+        .password-input-group button.submit-btn {
+            padding: 0.75rem 1.2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .password-error { color: #d32f2f; margin-top: 0.8rem; font-size: 0.9rem; display: none; }
+
+        .tabs-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: none;
+        }
+
+        /* THANH TABS CHÍNH */
+        .tabs {
+            display: flex;
+            background-color: #eaeaea;
+            border-bottom: 2px solid #ddd;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #555;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: white;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .tab-content { padding: 1.2rem 0.8rem; display: none; }
+        .tab-content.active { display: block; }
+
+        /* THANH TABS CON (SUB-TABS CHO TỪ VỰNG) */
+        .vocab-sub-tabs {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.8rem;
+        }
+
+        .vocab-sub-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #555;
+            transition: all 0.2s;
+        }
+
+        .vocab-sub-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .vocab-sub-content { display: none; }
+        .vocab-sub-content.active { display: block; }
+
+        /* TIỂU MỤC CHỦ ĐỀ CON */
+        .sub-categories {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sub-categories::-webkit-scrollbar { display: none; }
+
+        .sub-cat-btn {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 0.4rem 0.9rem;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .sub-cat-btn.active {
+            background-color: #555;
+            color: white;
+            border-color: #555;
+        }
+
+        .sub-content { display: none; }
+        .sub-content.active { display: block; }
+
+        /* --- 手機端樣式 (預設輪播) --- */
+        .flashcard-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            max-width: 320px;
+            height: 320px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+            width: 100%;
+        }
+
+        .carousel-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .carousel-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .carousel-page-info {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            border-radius: var(--border-radius);
+        }
+
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #eee;
+            box-sizing: border-box;
+            padding: 0.8rem;
+        }
+
+        .flip-card-back {
+            background-color: #fff8f8;
+            transform: rotateY(180deg);
+        }
+
+        .chinese-word {
+            font-family: var(--font-simsun);
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        .pinyin-word {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+
+        .topic-icon-display { font-size: 3.8rem; color: #555; }
+        .flag-icon-display {
+            font-size: 4.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            border-radius: 4px;
+        }
+
+        .audio-btn {
+            background: #fff;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .dialogue-container { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
+        .dialogue-section { background: #fdfdfd; border-left: 4px solid var(--primary-color); padding: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .dialogue-section h4 { margin: 0 0 0.8rem 0; color: var(--primary-color); font-size: 1rem; }
+        .chat-bubble { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.8rem; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 0.85rem; flex-shrink: 0; }
+        .speaker-a .avatar { background-color: #ffebee; color: #c62828; }
+        .speaker-b .avatar { background-color: #e8f5e9; color: #2e7d32; }
+        .bubble-content { padding: 0.6rem 1rem; border-radius: 14px; max-width: 85%; }
+        .speaker-a .bubble-content { background-color: #f5f5f5; border-top-left-radius: 2px; }
+        .speaker-b .bubble-content { background-color: #e8f8f5; border-top-left-radius: 2px; }
+        
+        .chat-text-zh { font-family: var(--font-simsun); font-size: 1.6rem; margin: 0; font-weight: bold; }
+        .chat-text-py { font-size: 0.9rem; color: #666; margin: 0.2rem 0 0 0; font-style: italic; }
+        .chat-audio-btn { background: transparent; border: none; cursor: pointer; padding: 4px; font-size: 1.1rem; vertical-align: middle; }
+
+        .placeholder-text {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        /* --- 電腦端樣式（恢復原本的 Grid 多欄排版） --- */
+        @media (min-width: 768px) {
+            header { padding: 2.2rem 1rem; }
+            header h1 { font-size: 2.3rem; }
+            header p { font-size: 1.2rem; }
+            .filter-bar { flex-direction: row; gap: 1.5rem; padding: 1.5rem; }
+            
+            /* 恢復 4 欄網格布局 */
+            .flashcard-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.5rem;
+            }
+
+            /* 電腦端顯示所有卡片，覆蓋 inline 隱藏樣式 */
+            .flip-card {
+                display: block !important;
+                max-width: none;
+                height: 210px;
+            }
+
+            /* 隱藏頁碼與切換按鈕 */
+            .carousel-controls {
+                display: none !important;
+            }
+
+            .chinese-word { font-size: 3.2rem; }
+            .pinyin-word { font-size: 1.4rem; }
+            .topic-icon-display { font-size: 4.8rem; }
+            .flag-icon-display { font-size: 5.5rem; }
+            .tab-btn { font-size: 1.05rem; padding: 1rem 1.8rem; }
+            .sub-cat-btn { font-size: 0.95rem; padding: 0.5rem 1.2rem; }
+            .chat-text-zh { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Tài liệu lớp HSK3.0</h1>
+        <p>SHZ Lý Thường Kiệt</p>
+    </header>
+
+    <div class="container">
+        <!-- Bộ lọc Trình độ và Bài học -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="level-select">Trình độ</label>
+                <select id="level-select">
+                    <option value="">-- Chọn trình độ --</option>
+                    <option value="hsk1">HSK1</option>
+                    <option value="hsk2">HSK2</option>
+                    <option value="hsk31">HSK3.1</option>
+                    <option value="hsk32">HSK3.2</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="lesson-select">Bài học</label>
+                <select id="lesson-select" disabled>
+                    <option value="">-- Chọn bài --</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Khung Nhập Mật Khẩu -->
+        <div id="password-box" class="password-box">
+            <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 0.8rem;"></i>
+            <h3>Bài học bị khóa</h3>
+            <p>Vui lòng nhập mật khẩu bài học:</p>
+            <div class="password-input-group">
+                <div class="password-input-wrapper">
+                    <input type="password" id="pass-input" placeholder="Nhập mật khẩu...">
+                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()" title="Hiển thị/Ẩn mật khẩu">
+                        <i id="toggle-icon" class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <button class="submit-btn" onclick="checkPassword()">Xác nhận</button>
+            </div>
+            <div id="pass-error" class="password-error">Mật khẩu không chính xác, vui lòng thử lại!</div>
+        </div>
+
+        <!-- Khu vực nội dung học -->
+        <div id="learning-zone" class="tabs-container">
+            <!-- TABS CHÍNH -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'tab-vocab')">Từ vựng</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-sentences')">Mẫu câu</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-hanzi')">Chữ Hán</button>
+            </div>
+
+            <!-- TAB 1: TỪ VỰNG -->
+            <div id="tab-vocab" class="tab-content active">
+                <!-- TABS CON DÀNH CHO TỪ VỰNG -->
+                <div class="vocab-sub-tabs">
+                    <button class="vocab-sub-btn active" onclick="openVocabSubTab(event, 'vocab-img')">Flashcard hình ảnh - chữ Hán</button>
+                    <button class="vocab-sub-btn" onclick="openVocabSubTab(event, 'vocab-text')">Flashcard chữ Hán - pinyin</button>
+                </div>
+
+                <!-- SUB TAB 1.1: FLASHCARD HÌNH ẢNH - CHỮ HÁN -->
+                <div id="vocab-img" class="vocab-sub-content active">
+                    <div id="tab1-container"></div>
+                </div>
+
+                <!-- SUB TAB 1.2: FLASHCARD CHỮ HÁN - PINYIN -->
+                <div id="vocab-text" class="vocab-sub-content">
+                    <div id="tab2-container"></div>
                 </div>
             </div>
-        `;
-    }).join('');
 
-    const controls = `
-        <div class="carousel-controls">
-            <button class="carousel-btn" onclick="changeCard('${containerId}', -1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <span class="carousel-page-info" id="page-info-${containerId}">1 / ${dataList.length}</span>
-            <button class="carousel-btn" onclick="changeCard('${containerId}', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+            <!-- TAB 2: MẪU CÂU (HỘI THOẠI) -->
+            <div id="tab-sentences" class="tab-content">
+                <div id="sentences-container"></div>
+            </div>
+
+            <!-- TAB 3: CHỮ HÁN -->
+            <div id="tab-hanzi" class="tab-content">
+                <div class="placeholder-text">Nội dung chữ Hán đang được cập nhật...</div>
+            </div>
         </div>
-    `;
+    </div>
 
-    return `<div class="flashcard-grid">${cards}${controls}</div>`;
-}
+    <script>
+        // Cấu hình danh sách bài học
+        const lessonData = {
+            hsk1: [
+                "Ngữ âm",
+                "Bài 1 - 他叫什么名字",
+                "Bài 2 - 我和我的家人",
+                "Bài 3 - 你每天几点睡觉",
+                "Bài 4 - 一共多少钱"
+            ],
+            hsk2: [
+                "Bài 5 - 你去那儿干什么",
+                "Bài 6 - 手机在桌子上"
+            ],
+            hsk31: ["Bài 1 - 他叫什么名字"],
+            hsk32: ["Bài 1 - 他叫什么名字"]
+        };
+
+        // Danh sách mật khẩu tương ứng (Chữ cái đầu tiên của Pinyin từng từ)
+        const lessonPasswords = {
+            "Ngữ âm": "nguam",
+            "Bài 1 - 他叫什么名字": "tjsmmz",      // tā jiào shén me míng zi
+            "Bài 2 - 我和我的家人": "whwdjr",      // wǒ hé wǒ de jiā rén
+            "Bài 3 - 你每天几点睡觉": "nmtjdsj",    // nǐ měi tiān jǐ diǎn shuì jiào
+            "Bài 4 - 一共多少钱": "ygdsq",        // yī gòng duō shao qián
+            "Bài 5 - 你去那儿干什么": "nqngsm",     // nǐ qù nà er gàn shén me
+            "Bài 6 - 手机在桌子上": "sjzzzs"       // shǒu jī zài zhuō zi shang
+        };
+
+        // 如果有同音字需要區分檔名，可以手動指定 img (如 ta1.png / ta2.png)
+        const pronounsList = [
+            { word: "我", pinyin: "wǒ" }, 
+            { word: "你", pinyin: "nǐ" }, 
+            { word: "您", pinyin: "nín" },
+            { word: "他", pinyin: "tā", img: "ta1.png" }, 
+            { word: "她", pinyin: "tā", img: "ta2.png" }, 
+            { word: "我们", pinyin: "wǒmen" },
+            { word: "你们", pinyin: "nǐmen" }, 
+            { word: "他们", pinyin: "tāmen" }, 
+            { word: "她们", pinyin: "tāmen" }
+        ];
+
+        const greetingsList = [
+            { word: "你好", pinyin: "nǐ hǎo" }, 
+            { word: "您好", pinyin: "nín hǎo" }, 
+            { word: "老师好", pinyin: "lǎoshī hǎo" },
+            { word: "你们好", pinyin: "nǐmen hǎo" }, 
+            { word: "同學們好", pinyin: "tóngxuémen hǎo" }, 
+            { word: "大家好", pinyin: "dàjiā hǎo" }
+        ];
+
+        const relationsList = [
+            { word: "同学", pinyin: "tóngxué" }, 
+            { word: "同桌", pinyin: "tóngzhuō" }, 
+            { word: "同屋", pinyin: "tóngwū" },
+            { word: "同事", pinyin: "tóngshì" }, 
+            { word: "朋友", pinyin: "péngyou" }, 
+            { word: "男朋友", pinyin: "nánpéngyou" },
+            { word: "女朋友", pinyin: "nǚpéngyou" }
+        ];
+
+        const countriesList = [
+            { word: "越南", pinyin: "Yuènán", code: "vn" },
+            { word: "中国", pinyin: "Zhōngguó", code: "cn" },
+            { word: "韩国", pinyin: "Hánguó", code: "kr" },
+            { word: "英国", pinyin: "Yīngguó", code: "gb" },
+            { word: "美国", pinyin: "Měiguó", code: "us" },
+            { word: "法国", pinyin: "Fǎguó", code: "fr" },
+            { word: "德国", pinyin: "Déguó", code: "de" },
+            { word: "日本", pinyin: "Rìběn", code: "jp" },
+            { word: "加拿大", pinyin: "Jiānádà", code: "ca" },
+            { word: "俄罗斯", pinyin: "Éluósī", code: "ru" },
+            { word: "肯尼亚", pinyin: "Kěnníyà", code: "ke" },
+            { word: "沙特<br>阿拉伯", pinyin: "Shātè Ālābó", code: "sa" }
+        ];
+
+        const placesList = [
+            { word: "商店", pinyin: "shāngdiàn" },
+            { word: "书店", pinyin: "shūdiàn" },
+            { word: "饭店", pinyin: "fàndiàn" },
+            { word: "食堂", pinyin: "shítáng" },
+            { word: "商场", pinyin: "shāngchǎng" },
+            { word: "飞机场", pinyin: "fēijīchǎng" },
+            { word: "图书馆", pinyin: "túshūguǎn" },
+            { word: "体育馆", pinyin: "tǐyùguǎn" }
+        ];
+
+        function toggleFlip(cardElement, wordText) {
+            cardElement.classList.toggle("flipped");
+            if (cardElement.classList.contains("flipped")) {
+                speakChinese(wordText.replace(/<br>/g, ''));
+            }
+        }
+
+        function speakChinese(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN'; 
+                utterance.rate = 0.85; 
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function generateCardsHTML(dataList, containerId) {
+            if (!dataList || dataList.length === 0) return '';
+
+            const cards = dataList.map((item, index) => `
+                <div class="flip-card carousel-item-${containerId}" style="display: ${index === 0 ? 'block' : 'none'};" onclick="toggleFlip(this, '${item.word}')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="chinese-word">${item.word}</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="pinyin-word">${item.pinyin}</div>
+                            <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word.replace(/<br>/g, '')}')" title="Nghe phát âm">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="#d32f2f"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            const controls = `
+                <div class="carousel-controls">
+                    <button class="carousel-btn" onclick="changeCard('${containerId}', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="carousel-page-info" id="page-info-${containerId}">1 / ${dataList.length}</span>
+                    <button class="carousel-btn" onclick="changeCard('${containerId}', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            `;
+
+            return `<div class="flashcard-grid">${cards}${controls}</div>`;
+        }
+
+        function generateImgCardsHTML(dataList, containerId, isCountry = false) {
+            if (!dataList || dataList.length === 0) return '';
+
+            const cards = dataList.map((item, index) => {
+                let frontContent = "";
+                if (isCountry) {
+                    frontContent = `<span class="fi fi-${item.code} flag-icon-display"></span>`;
+                } else {
+                    // 1. 清洗詞彙中的 <br> 標籤 (例如 "沙特<br>阿拉伯" -> "沙特阿拉伯")
+                    const cleanWord = item.word.replace(/<br>/g, '');
+                    // 2. 優先使用手動指定的 img，否則預設使用 [詞彙].png (例如: "我.png")
+                    const rawFileName = item.img ? item.img : `${cleanWord}.png`;
+                    // 3. 進行 URL 安全編碼，確保中文檔名在各伺服器上都能正常載入
+                    const imgSrc = `image/${encodeURIComponent(rawFileName)}`;
+                    
+                    frontContent = `<img src="${imgSrc}" 
+                        style="max-width:95%; max-height:180px; width:auto; height:auto; object-fit:contain;" 
+                        alt="${cleanWord}"
+                        onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'chinese-word\\'>${cleanWord}</div>';">`;
+                }
+
+                return `
+                    <div class="flip-card carousel-item-${containerId}" style="display: ${index === 0 ? 'block' : 'none'};" onclick="toggleFlip(this, '${item.word}')">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                ${frontContent}
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="chinese-word" style="font-size: 2.2rem; margin-bottom:0.8rem;">${item.word}</div>
+                                <div class="pinyin-word" style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:normal; color:#666;">(${item.pinyin.replace(/<br>/g, ' ')})</div>
+                                <button class="audio-btn" onclick="event.stopPropagation(); speakChinese('${item.word.replace(/<br>/g, '')}')" title="Nghe phát âm">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="#d32f2f"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const controls = `
+                <div class="carousel-controls">
+                    <button class="carousel-btn" onclick="changeCard('${containerId}', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="carousel-page-info" id="page-info-${containerId}">1 / ${dataList.length}</span>
+                    <button class="carousel-btn" onclick="changeCard('${containerId}', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            `;
+
+            return `<div class="flashcard-grid">${cards}${controls}</div>`;
+        }
+
+        function changeCard(containerId, direction) {
+            const items = document.querySelectorAll(`.carousel-item-${containerId}`);
+            const pageInfo = document.getElementById(`page-info-${containerId}`);
+            if (!items.length) return;
+
+            let currentIndex = 0;
+            items.forEach((item, idx) => {
+                if (window.getComputedStyle(item).display !== 'none') {
+                    currentIndex = idx;
+                }
+            });
+
+            items[currentIndex].classList.remove('flipped');
+            items[currentIndex].style.display = 'none';
+
+            let nextIndex = currentIndex + direction;
+            if (nextIndex < 0) nextIndex = items.length - 1;
+            if (nextIndex >= items.length) nextIndex = 0;
+
+            items[nextIndex].style.display = 'block';
+            if (pageInfo) {
+                pageInfo.textContent = `${nextIndex + 1} / ${items.length}`;
+            }
+        }
+
+        const levelSelect = document.getElementById("level-select");
+        const lessonSelect = document.getElementById("lesson-select");
+        const learningZone = document.getElementById("learning-zone");
+        const passwordBox = document.getElementById("password-box");
+        const passInput = document.getElementById("pass-input");
+        const passError = document.getElementById("pass-error");
+        const toggleIcon = document.getElementById("toggle-icon");
+
+        function togglePasswordVisibility() {
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passInput.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            }
+        }
+
+        function updateLessonOptions() {
+            const level = levelSelect.value;
+            lessonSelect.innerHTML = '<option value="">-- Chọn bài --</option>';
+            
+            if (level && lessonData[level]) {
+                lessonData[level].forEach((item) => {
+                    const opt = document.createElement("option");
+                    opt.value = item;
+                    opt.textContent = item;
+                    lessonSelect.appendChild(opt);
+                });
+                lessonSelect.removeAttribute("disabled");
+            } else {
+                lessonSelect.setAttribute("disabled", "true");
+            }
+            learningZone.style.display = "none";
+            passwordBox.style.display = "none";
+        }
+
+        function checkLessonAccess() {
+            const level = levelSelect.value;
+            const lesson = lessonSelect.value;
+
+            if (level) localStorage.setItem('savedLevel', level);
+            if (lesson) localStorage.setItem('savedLesson', lesson);
+
+            if (!level || !lesson) {
+                learningZone.style.display = "none";
+                passwordBox.style.display = "none";
+                return;
+            }
+
+            const unlockedLessons = JSON.parse(localStorage.getItem('unlockedLessons') || '{}');
+
+            if (unlockedLessons[lesson] === true) {
+                passwordBox.style.display = "none";
+                renderLessonContent();
+            } else {
+                learningZone.style.display = "none";
+                passwordBox.style.display = "block";
+                passInput.value = "";
+                passInput.type = "password";
+                toggleIcon.className = "fa-solid fa-eye";
+                passError.style.display = "none";
+            }
+        }
+
+        function checkPassword() {
+            const lesson = lessonSelect.value;
+            const enteredPass = passInput.value.trim().toLowerCase();
+            const correctPass = lessonPasswords[lesson];
+
+            if (enteredPass === correctPass) {
+                const unlockedLessons = JSON.parse(localStorage.getItem('unlockedLessons') || '{}');
+                unlockedLessons[lesson] = true;
+                localStorage.setItem('unlockedLessons', JSON.stringify(unlockedLessons));
+
+                passwordBox.style.display = "none";
+                renderLessonContent();
+            } else {
+                passError.style.display = "block";
+            }
+        }
+
+        passInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") checkPassword();
+        });
+
+        function renderLessonContent() {
+            const lesson = lessonSelect.value;
+            learningZone.style.display = "block";
+
+            const tab1Container = document.getElementById("tab1-container");
+            const tab2Container = document.getElementById("tab2-container");
+            const sentencesContainer = document.getElementById("sentences-container");
+
+            if (lesson.includes("Bài 1")) {
+                tab1Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-pronouns')">Đại từ nhân xưng</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-greetings')">Câu chào hỏi</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-relations')">Mối quan hệ</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-img-countries')">Quốc gia</button>
+                    </div>
+                    <div id="cat-img-pronouns" class="sub-content active">${generateImgCardsHTML(pronounsList, 'img-pronouns')}</div>
+                    <div id="cat-img-greetings" class="sub-content">${generateImgCardsHTML(greetingsList, 'img-greetings')}</div>
+                    <div id="cat-img-relations" class="sub-content">${generateImgCardsHTML(relationsList, 'img-relations')}</div>
+                    <div id="cat-img-countries" class="sub-content">${generateImgCardsHTML(countriesList, 'img-countries', true)}</div>
+                `;
+
+                tab2Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-pronouns')">Đại từ nhân xưng</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-greetings')">Câu chào hỏi</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-relations')">Mối quan hệ</button>
+                        <button class="sub-cat-btn" onclick="openSubCat(event, 'cat-countries')">Quốc gia</button>
+                    </div>
+                    <div id="cat-pronouns" class="sub-content active">${generateCardsHTML(pronounsList, 'text-pronouns')}</div>
+                    <div id="cat-greetings" class="sub-content">${generateCardsHTML(greetingsList, 'text-greetings')}</div>
+                    <div id="cat-relations" class="sub-content">${generateCardsHTML(relationsList, 'text-relations')}</div>
+                    <div id="cat-countries" class="sub-content">${generateCardsHTML(countriesList, 'text-countries')}</div>
+                `;
+
+                sentencesContainer.innerHTML = `
+                    <div class="dialogue-container">
+                        <div class="dialogue-section">
+                            <h4>Mẫu 1: Hỏi tên (Thông thường)</h4>
+                            <div class="chat-bubble speaker-a">
+                                <div class="avatar">A</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">你叫什么名字？<button class="chat-audio-btn" onclick="speakChinese('你叫什么名字？')">🔊</button></p>
+                                    <p class="chat-text-py">Nǐ jiào shénme míngzi?</p>
+                                </div>
+                            </div>
+                            <div class="chat-bubble speaker-b">
+                                <div class="avatar">B</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">我叫……<button class="chat-audio-btn" onclick="speakChinese('我叫')">🔊</button></p>
+                                    <p class="chat-text-py">Wǒ jiào...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dialogue-section">
+                            <h4>Mẫu 2: Hỏi họ (Thông thường)</h4>
+                            <div class="chat-bubble speaker-a">
+                                <div class="avatar">A</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">你姓什么？<button class="chat-audio-btn" onclick="speakChinese('你姓什么？')">🔊</button></p>
+                                    <p class="chat-text-py">Nǐ xìng shénme?</p>
+                                </div>
+                            </div>
+                            <div class="chat-bubble speaker-b">
+                                <div class="avatar">B</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
+                                    <p class="chat-text-py">Wǒ xìng...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dialogue-section">
+                            <h4>Mẫu 3: Hỏi họ (Trang trọng, lịch sự)</h4>
+                            <div class="chat-bubble speaker-a">
+                                <div class="avatar">A</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">请问您贵姓？<button class="chat-audio-btn" onclick="speakChinese('请问您贵姓？')">🔊</button></p>
+                                    <p class="chat-text-py">Qǐngwèn nín guìxìng?</p>
+                                </div>
+                            </div>
+                            <div class="chat-bubble speaker-b">
+                                <div class="avatar">B</div>
+                                <div class="bubble-content">
+                                    <p class="chat-text-zh">我姓……<button class="chat-audio-btn" onclick="speakChinese('我姓')">🔊</button></p>
+                                    <p class="chat-text-py">Wǒ xìng...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (lesson.includes("Bài 5")) {
+                tab1Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-img-places')">Nơi chốn</button>
+                    </div>
+                    <div id="cat-img-places" class="sub-content active">
+                        ${generateImgCardsHTML(placesList, 'img-places')}
+                    </div>
+                `;
+
+                tab2Container.innerHTML = `
+                    <div class="sub-categories">
+                        <button class="sub-cat-btn active" onclick="openSubCat(event, 'cat-places')">Nơi chốn</button>
+                    </div>
+                    <div id="cat-places" class="sub-content active">
+                        ${generateCardsHTML(placesList, 'text-places')}
+                    </div>
+                `;
+
+                sentencesContainer.innerHTML = `<div class="placeholder-text">Nội dung mẫu câu cho ${lesson} đang được cập nhật...</div>`;
+            } else {
+                const notAvailableHTML = `<div class="placeholder-text">Nội dung từ vựng cho ${lesson} đang được cập nhật...</div>`;
+                tab1Container.innerHTML = notAvailableHTML;
+                tab2Container.innerHTML = notAvailableHTML;
+                sentencesContainer.innerHTML = `<div class="placeholder-text">Nội dung mẫu câu cho ${lesson} đang được cập nhật...</div>`;
+            }
+        }
+
+        levelSelect.addEventListener("change", () => {
+            updateLessonOptions();
+            localStorage.setItem('savedLevel', levelSelect.value);
+            localStorage.removeItem('savedLesson');
+        });
+        
+        lessonSelect.addEventListener("change", checkLessonAccess);
+
+        function openTab(evt, tabId) {
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) tabContents[i].classList.remove("active");
+            const tabBtns = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabBtns.length; i++) tabBtns[i].classList.remove("active");
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function openVocabSubTab(evt, subTabId) {
+            const subContents = document.getElementsByClassName("vocab-sub-content");
+            for (let i = 0; i < subContents.length; i++) subContents[i].classList.remove("active");
+            const subBtns = document.getElementsByClassName("vocab-sub-btn");
+            for (let i = 0; i < subBtns.length; i++) subBtns[i].classList.remove("active");
+            document.getElementById(subTabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function openSubCat(evt, catId) {
+            const parent = evt.currentTarget.parentElement.parentElement;
+            const subContents = parent.getElementsByClassName("sub-content");
+            for (let i = 0; i < subContents.length; i++) subContents[i].classList.remove("active");
+            const subBtns = evt.currentTarget.parentElement.getElementsByClassName("sub-cat-btn");
+            for (let i = 0; i < subBtns.length; i++) subBtns[i].classList.remove("active");
+            document.getElementById(catId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedLevel = localStorage.getItem('savedLevel');
+            const savedLesson = localStorage.getItem('savedLesson');
+
+            if (savedLevel && lessonData[savedLevel]) {
+                levelSelect.value = savedLevel;
+                updateLessonOptions();
+                
+                if (savedLesson) {
+                    lessonSelect.value = savedLesson;
+                    checkLessonAccess();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
